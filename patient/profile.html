@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile | Pulilan Health Center</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+* { box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: #f6f8fb; margin: 0; }
+
+/* ── NAVBAR ── */
+.navbar { position: sticky; top: 0; z-index: 1000; background: white; border-bottom: 3px solid #1e40af; }
+.nav-container {
+  width: 100%; padding: 14px 60px;
+  display: flex; align-items: center; position: relative;
+}
+.logo-area { display: flex; align-items: center; gap: 12px; }
+.menu { display: flex; gap: 15px; align-items: center; margin-left: auto; }
+.menu a { text-decoration: none; color: #374151; font-weight: 500; padding: 8px 16px; border-radius: 8px; transition: 0.2s; }
+.menu a.active { background: #1e40af; color: white; }
+.menu a:hover { background: #eef2ff; }
+.avatar { width: 34px; height: 34px; background: #1e40af; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; cursor: pointer; margin-left: 10px; }
+
+/* Hamburger */
+.hamburger-btn {
+  display: none; background: none; border: none;
+  font-size: 22px; color: #374151; cursor: pointer;
+  margin-left: auto; padding: 4px;
+}
+.mobile-menu {
+  display: none; position: absolute; top: 100%; left: 0; right: 0;
+  background: white; border-top: 1px solid #e5e7eb;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  padding: 12px 20px 16px; z-index: 999; flex-direction: column; gap: 6px;
+}
+.mobile-menu.show { display: flex; }
+.mobile-menu a {
+  display: block; padding: 10px 12px; border-radius: 8px;
+  text-decoration: none; font-size: 14px; font-weight: 500;
+  color: #374151; transition: 0.15s;
+}
+.mobile-menu a:hover { background: #f1f5f9; color: #1e40af; }
+.mobile-menu a.active { background: #1e40af; color: white; }
+.mob-divider { height: 1px; background: #e5e7eb; margin: 6px 0; }
+.mob-user {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; font-size: 14px; font-weight: 600; color: #111827;
+}
+.mob-avatar {
+  width: 32px; height: 32px; background: #1e40af; color: white;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 13px; flex-shrink: 0;
+}
+.mob-logout {
+  display: block; padding: 10px 12px; border-radius: 8px;
+  text-decoration: none; font-size: 14px; font-weight: 500;
+  color: #dc2626; background: none; border: none;
+  font-family: 'Inter', sans-serif; cursor: pointer;
+  text-align: left; width: 100%; transition: 0.15s;
+}
+.mob-logout:hover { background: #fee2e2; }
+
+/* ── PAGE ── */
+.page-container { max-width: 1400px; margin: auto; padding: 40px; }
+
+/* PROFILE HEADER */
+.profile-header-card {
+  background: white; border-radius: 14px; border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 20px; overflow: hidden;
+}
+.profile-header-top {
+  background: #1e40af; padding: 28px 32px;
+  display: flex; align-items: center; gap: 22px; flex-wrap: wrap;
+}
+.profile-avatar-big {
+  width: 80px; height: 80px;
+  background: rgba(255,255,255,0.2); border: 3px solid rgba(255,255,255,0.45);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 30px; font-weight: 700; color: white; flex-shrink: 0;
+}
+.profile-header-info { flex: 1; min-width: 160px; }
+.profile-header-name { font-size: 22px; font-weight: 700; color: white; margin: 0 0 4px; }
+.profile-header-sub  { font-size: 14px; color: rgba(255,255,255,0.75); margin: 0; }
+.profile-header-stats { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.phs-item { text-align: center; }
+.phs-label { font-size: 11px; color: rgba(255,255,255,0.65); text-transform: uppercase; letter-spacing: 0.07em; display: block; margin-bottom: 3px; }
+.phs-value { font-size: 15px; font-weight: 700; color: white; }
+.phs-divider { width: 1px; height: 36px; background: rgba(255,255,255,0.2); }
+.profile-header-bottom { padding: 14px 32px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.completeness-wrap-inline { display: flex; align-items: center; gap: 12px; flex: 1; max-width: 360px; min-width: 200px; }
+.completeness-wrap-inline span { font-size: 13px; color: #6b7280; white-space: nowrap; font-weight: 500; }
+.completeness-track { background: #e5e7eb; border-radius: 99px; height: 8px; flex: 1; overflow: hidden; }
+.completeness-fill  { background: #1e40af; height: 100%; border-radius: 99px; transition: width 0.5s; }
+.pct-label { font-size: 13px; font-weight: 700; color: #1e40af; white-space: nowrap; }
+.badge-active { background: #dcfce7; color: #15803d; font-size: 13px; font-weight: 600; padding: 4px 12px; border-radius: 20px; display: inline-flex; align-items: center; gap: 5px; }
+
+/* TAB NAV */
+.tab-nav {
+  background: white; border-radius: 14px; border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 8px; display: flex; gap: 4px;
+  flex-wrap: wrap; margin-bottom: 20px; overflow-x: auto;
+}
+.tab-btn {
+  flex: 1; min-width: 90px; padding: 13px 10px;
+  border-radius: 9px; font-size: 13.5px; font-weight: 500;
+  color: #6b7280; cursor: pointer; border: none;
+  background: none; text-align: center;
+  font-family: 'Inter', sans-serif; transition: 0.18s;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  white-space: nowrap;
+}
+.tab-btn i { font-size: 17px; }
+.tab-btn:hover { background: #f1f5f9; color: #1e40af; }
+.tab-btn.active { background: #1e40af; color: white; font-weight: 600; }
+
+/* SECTION CARD */
+.section-card {
+  background: white; border-radius: 14px; border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04); overflow: hidden;
+}
+.section-head {
+  padding: 20px 28px 16px; border-bottom: 1px solid #f1f5f9;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+}
+.section-head-left { display: flex; align-items: center; gap: 12px; }
+.section-head-left h6 { font-weight: 700; font-size: 18px; color: #111827; margin: 0 0 3px; }
+.section-head-left p  { font-size: 13px; color: #9ca3af; margin: 0; }
+.hicon { width: 40px; height: 40px; border-radius: 10px; background: #dbeafe; display: flex; align-items: center; justify-content: center; color: #1e40af; font-size: 17px; flex-shrink: 0; }
+.section-body { padding: 28px; }
+
+/* FORM */
+.form-grid    { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.form-grid.g3 { grid-template-columns: 1fr 1fr 1fr; }
+.span2 { grid-column: span 2; }
+.span3 { grid-column: span 3; }
+.form-group { display: flex; flex-direction: column; gap: 7px; }
+.form-group label { font-size: 14.5px; font-weight: 600; color: #374151; }
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 13px 15px; border: 1.5px solid #d1d5db;
+  border-radius: 9px; font-size: 15px;
+  font-family: 'Inter', sans-serif; color: #111827;
+  background: white; transition: 0.18s; outline: none;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus { border-color: #1e40af; box-shadow: 0 0 0 3px rgba(30,64,175,0.09); }
+.form-group input[readonly] { background: #f9fafb; color: #9ca3af; cursor: not-allowed; }
+.form-group textarea { resize: vertical; min-height: 90px; }
+
+/* BUTTONS */
+.btn-save { background: #1e40af; color: white; border: none; padding: 12px 24px; border-radius: 9px; font-weight: 600; font-size: 15px; font-family: 'Inter', sans-serif; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+.btn-save:hover { background: #1d4ed8; }
+.btn-dark-blue { background: #1e40af; color: white; border: none; padding: 11px 24px; border-radius: 9px; font-weight: 600; font-size: 15px; font-family: 'Inter', sans-serif; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+.btn-dark-blue:hover { background: #1d4ed8; }
+
+/* PHILHEALTH CARD */
+.ph-card { background: #1e40af; border-radius: 12px; padding: 22px 24px; color: white; margin-bottom: 24px; }
+.ph-gov  { font-size: 11px; color: rgba(255,255,255,0.65); letter-spacing: 0.07em; text-transform: uppercase; }
+.ph-corp { font-size: 15px; font-weight: 700; color: white; margin-bottom: 16px; }
+.ph-num  { font-size: 22px; font-weight: 700; letter-spacing: 3px; font-family: monospace; margin-bottom: 16px; }
+.ph-row  { display: flex; gap: 28px; flex-wrap: wrap; }
+.ph-field small { font-size: 11px; color: rgba(255,255,255,0.6); display: block; margin-bottom: 2px; }
+.ph-field span  { font-size: 14px; font-weight: 600; }
+
+/* RHU CARDS */
+.rhu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+.rhu-card { border: 2px solid #e5e7eb; border-radius: 12px; padding: 18px; cursor: pointer; transition: 0.18s; position: relative; }
+.rhu-card:hover { border-color: #93c5fd; background: #f9fafb; }
+.rhu-card.selected { border-color: #1e40af; background: #eff6ff; }
+.rhu-name    { font-weight: 700; font-size: 15px; color: #111827; margin-bottom: 5px; }
+.rhu-address { font-size: 13px; color: #6b7280; margin-bottom: 8px; }
+.rhu-hours   { font-size: 13px; color: #374151; display: flex; align-items: center; gap: 6px; }
+.rhu-check   { display: none; position: absolute; top: 14px; right: 14px; width: 22px; height: 22px; background: #1e40af; border-radius: 50%; align-items: center; justify-content: center; color: white; font-size: 11px; }
+.rhu-card.selected .rhu-check { display: flex; }
+
+/* TOGGLE */
+.toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid #f3f4f6; gap: 20px; flex-wrap: wrap; }
+.toggle-row:last-child { border-bottom: none; }
+.tr-label { flex: 1; min-width: 200px; }
+.tr-label strong { display: block; font-size: 15px; font-weight: 600; color: #111827; margin-bottom: 3px; }
+.tr-label span   { font-size: 13px; color: #9ca3af; }
+.toggle { position: relative; width: 44px; height: 25px; flex-shrink: 0; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.t-slider { position: absolute; inset: 0; background: #d1d5db; border-radius: 99px; cursor: pointer; transition: 0.2s; }
+.t-slider::before { content: ''; position: absolute; width: 19px; height: 19px; border-radius: 50%; background: white; top: 3px; left: 3px; transition: 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+.toggle input:checked + .t-slider { background: #1e40af; }
+.toggle input:checked + .t-slider::before { transform: translateX(19px); }
+
+/* INFO NOTICE */
+.info-notice { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 14px 18px; display: flex; gap: 12px; font-size: 14px; color: #1e40af; line-height: 1.5; margin-bottom: 20px; }
+.info-notice i { margin-top: 2px; flex-shrink: 0; font-size: 16px; }
+
+/* MODAL */
+.simple-modal .modal-content { border-radius: 12px; border: 1px solid #e5e7eb; box-shadow: 0 8px 32px rgba(0,0,0,0.12); font-family: 'Inter', sans-serif; }
+.simple-modal .modal-header { padding: 18px 22px 14px; border-bottom: 1px solid #f1f5f9; }
+.simple-modal .modal-title { font-size: 16px; font-weight: 700; color: #111827; display: flex; align-items: center; gap: 9px; }
+.mti { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.mti-success { background: #dcfce7; color: #15803d; }
+.simple-modal .modal-body   { padding: 18px 22px; font-size: 15px; color: #374151; line-height: 1.6; }
+.simple-modal .modal-footer { padding: 14px 22px 18px; border-top: 1px solid #f1f5f9; gap: 10px; justify-content: flex-end; }
+
+/* ══ RESPONSIVE ══ */
+
+@media (max-width: 900px) {
+  .nav-container { padding: 14px 24px; }
+  .menu { display: none; }
+  .hamburger-btn { display: block; }
+  .page-container { padding: 24px; }
+  .profile-header-top { flex-direction: column; text-align: center; align-items: center; }
+  .profile-header-stats { justify-content: center; }
+  .phs-divider { display: none; }
+  .form-grid.g3 { grid-template-columns: 1fr 1fr; }
+  .span3 { grid-column: span 2; }
+}
+
+@media (max-width: 600px) {
+  .nav-container { padding: 12px 16px; }
+  .page-container { padding: 14px; }
+  .profile-header-top { padding: 20px 18px; }
+  .profile-header-bottom { padding: 12px 18px; }
+  .section-head { padding: 16px 18px 14px; }
+  .section-body { padding: 18px; }
+  .form-grid, .form-grid.g3 { grid-template-columns: 1fr; }
+  .span2, .span3 { grid-column: span 1; }
+  .rhu-grid { grid-template-columns: 1fr; }
+  .tab-btn { min-width: 70px; font-size: 11px; padding: 10px 6px; gap: 4px; }
+  .tab-btn i { font-size: 15px; }
+  .profile-header-name { font-size: 18px; }
+  .profile-header-stats { gap: 12px; }
+  .phs-value { font-size: 13px; }
+  .ph-num { font-size: 17px; letter-spacing: 1px; }
+  .btn-save { width: 100%; justify-content: center; }
+  .completeness-wrap-inline { max-width: 100%; min-width: unset; }
+}
+
+@media (max-width: 400px) {
+  .tab-btn span { display: none; }
+  .tab-btn { min-width: 44px; padding: 10px 4px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="logo-area">
+      <img src="images/logo.png" style="width:45px;height:45px;border-radius:8px;">
+      <div>
+        <strong>Pulilan Health Center</strong><br>
+        <small style="color:#6b7280;">Appointment System</small>
+      </div>
+    </div>
+
+    <!-- Desktop menu -->
+    <div class="menu">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="book.html">Book Appointment</a>
+      <a href="appointments.html">My Appointments</a>
+      <a href="queue.html">Queue Status</a>
+      <div class="dropdown">
+        <div class="avatar" id="avatarBtn" data-bs-toggle="dropdown">A</div>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="profile.html"><i class="fa fa-user me-2"></i>Profile</a></li>
+          <li><a class="dropdown-item text-danger" href="login.html"><i class="fa fa-right-from-bracket me-2"></i>Logout</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Hamburger -->
+    <button class="hamburger-btn" onclick="toggleMobileMenu()" id="hamburgerBtn">
+      <i class="fas fa-bars" id="hamburgerIcon"></i>
+    </button>
+
+    <!-- Mobile menu -->
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="mob-user">
+        <div class="mob-avatar" id="mobAvatar">A</div>
+        <span id="mobName">Ashley Amira</span>
+      </div>
+      <div class="mob-divider"></div>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="book.html">Book Appointment</a>
+      <a href="appointments.html">My Appointments</a>
+      <a href="queue.html">Queue Status</a>
+      <a href="profile.html" class="active">My Profile</a>
+      <div class="mob-divider"></div>
+      <button class="mob-logout" onclick="location.href='login.html'">
+        <i class="fa fa-right-from-bracket me-2"></i>Logout
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="page-container">
+
+  <!-- PROFILE HEADER -->
+  <div class="profile-header-card">
+    <div class="profile-header-top">
+      <div class="profile-avatar-big" id="avatarBig">A</div>
+      <div class="profile-header-info">
+        <p class="profile-header-name" id="headerName">Ashley Amira</p>
+        <p class="profile-header-sub"  id="headerSub">Pulilan Health Center · PHC-2026-001</p>
+      </div>
+      <div class="profile-header-stats">
+        <div class="phs-item">
+          <span class="phs-label">Status</span>
+          <span class="phs-value"><span class="badge-active">● Active</span></span>
+        </div>
+        <div class="phs-divider"></div>
+        <div class="phs-item">
+          <span class="phs-label">Blood Type</span>
+          <span class="phs-value" id="hBlood">—</span>
+        </div>
+        <div class="phs-divider"></div>
+        <div class="phs-item">
+          <span class="phs-label">Preferred RHU</span>
+          <span class="phs-value" id="hRhu">—</span>
+        </div>
+        <div class="phs-divider"></div>
+        <div class="phs-item">
+          <span class="phs-label">4Ps Member</span>
+          <span class="phs-value" id="h4ps">No</span>
+        </div>
+        <div class="phs-divider"></div>
+        <div class="phs-item">
+          <span class="phs-label">Senior Citizen</span>
+          <span class="phs-value" id="hSenior">No</span>
+        </div>
+      </div>
+    </div>
+    <div class="profile-header-bottom">
+      <div class="completeness-wrap-inline">
+        <span>Profile Completeness</span>
+        <div class="completeness-track">
+          <div class="completeness-fill" id="pctFill" style="width:0%"></div>
+        </div>
+        <span class="pct-label" id="pctLabel">0%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB NAV -->
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="show('personal',this)">
+      <i class="fas fa-user"></i> <span>Personal</span>
+    </button>
+    <button class="tab-btn" onclick="show('contact',this)">
+      <i class="fas fa-map-marker-alt"></i> <span>Contact</span>
+    </button>
+    <button class="tab-btn" onclick="show('health',this)">
+      <i class="fas fa-heart-pulse"></i> <span>Health</span>
+    </button>
+    <button class="tab-btn" onclick="show('rhu',this)">
+      <i class="fas fa-hospital"></i> <span>RHU</span>
+    </button>
+    <button class="tab-btn" onclick="show('philhealth',this)">
+      <i class="fas fa-id-card"></i> <span>PhilHealth</span>
+    </button>
+    <button class="tab-btn" onclick="show('benefits',this)">
+      <i class="fas fa-hand-holding-heart"></i> <span>Benefits</span>
+    </button>
+    <button class="tab-btn" onclick="show('emergency',this)">
+      <i class="fas fa-phone"></i> <span>Emergency</span>
+    </button>
+    <button class="tab-btn" onclick="show('account',this)">
+      <i class="fas fa-lock"></i> <span>Account</span>
+    </button>
+  </div>
+
+  <!-- PERSONAL INFO -->
+  <div class="section-card" id="sec-personal">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="hicon"><i class="fas fa-user"></i></div>
+        <div><h6>Personal Information</h6><p>Your basic personal details</p></div>
+      </div>
+      <button class="btn-save" onclick="save('personal')"><i class="fas fa-floppy-disk"></i> Save</button>
+    </div>
+    <div class="section-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" id="firstName" value="Ashley" placeholder="First name">
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" id="lastName" value="Amira" placeholder="Last name">
+        </div>
+        <div class="form-group">
+          <label>Middle Name</label>
+          <input type="text" id="middleName" placeholder="Middle name">
+        </div>
+        <div class="form-group">
+          <label>Suffix</label>
+          <select id="suffix">
+            <option value="">None</option>
+            <option>Jr.</option><option>Sr.</option><option>II</option><option>III</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Date of Birth</label>
+          <input type="date" id="dob">
+        </div>
+        <div class="form-group">
+          <label>Sex</label>
+          <select id="sex">
+            <option value="">Select</option>
+            <option>Female</option><option>Male</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Civil Status</label>
+          <select id="civilStatus">
+            <option value="">Select</option>
+            <option>Single</option><option>Married</option>
+            <option>Widowed</option><option>Separated</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Nationality</label>
+          <input type="text" id="nationality" value="Filipino">
+        </div>
+        <div class="form-group">
+          <label>Religion</label>
+          <input type="text" id="religion" placeholder="e.g. Roman Catholic">
+        </div>
+        <div class="form-group">
+          <label>Occupation</label>
+          <input type="text" id="occupation" placeholder="e.g. Farmer, Teacher, Housewife">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT & ADDRESS -->
+  <div class="section-card" id="sec-contact" style="display:none;">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="hicon"><i class="fas fa-map-marker-alt"></i></div>
+        <div><h6>Contact & Address</h6><p>Your contact info and location in Pulilan</p></div>
+      </div>
+      <button class="btn-save" onclick="save('contact')"><i class="fas fa-floppy-disk"></i> Save</button>
+    </div>
+    <div class="section-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Mobile Number</label>
+          <input type="tel" id="mobile" placeholder="09XX XXX XXXX">
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="email" placeholder="your@email.com">
+        </div>
+        <div class="form-group span2">
+          <label>Barangay</label>
+          <select id="barangay">
+            <option value="">Select Barangay</option>
+            <option>Balatong A</option><option>Balatong B</option>
+            <option>Cutcot</option><option>Dampol 1st</option>
+            <option>Dampol 2nd A</option><option>Dampol 2nd B</option>
+            <option>Dulong Malabon</option><option>Inaon</option>
+            <option>Lumbac</option><option>Paltao</option>
+            <option>Penabatan</option><option>Poblacion</option>
+            <option>Pulilen (Patubig)</option><option>Santa Peregrina</option>
+            <option>Santo Cristo</option><option>Tiaong</option>
+            <option>Tibag</option><option>Tinejero</option>
+          </select>
+        </div>
+        <div class="form-group span2">
+          <label>House No. / Street / Purok</label>
+          <input type="text" id="street" placeholder="House no., street name, purok">
+        </div>
+        <div class="form-group">
+          <label>Municipality</label>
+          <input type="text" value="Pulilan" readonly>
+        </div>
+        <div class="form-group">
+          <label>Province</label>
+          <input type="text" value="Bulacan" readonly>
+        </div>
+        <div class="form-group">
+          <label>ZIP Code</label>
+          <input type="text" id="zip" value="3005">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEALTH INFORMATION -->
+  <div class="section-card" id="sec-health" style="display:none;">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="hicon"><i class="fas fa-heart-pulse"></i></div>
+        <div><h6>Health Information</h6><p>Your medical background</p></div>
+      </div>
+      <button class="btn-save" onclick="save('health')"><i class="fas fa-floppy-disk"></i> Save</button>
+    </div>
+    <div class="section-body">
+      <div class="form-grid g3">
+        <div class="form-group">
+          <label>Blood Type</label>
+          <select id="bloodType" onchange="updateHeader()">
+            <option value="">Select</option>
+            <option>A+</option><option>A-</option>
+            <option>B+</option><option>B-</option>
+            <option>O+</option><option>O-</option>
+            <option>AB+</option><option>AB-</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Height (cm)</label>
+          <input type="number" id="height" placeholder="e.g. 160">
+        </div>
+        <div class="form-group">
+          <label>Weight (kg)</label>
+          <input type="number" id="weight" placeholder="e.g. 55">
+        </div>
+        <div class="form-group span3">
+          <label>Allergies</label>
+          <input type="text" id="allergies" placeholder="e.g. Penicillin, Shellfish (leave blank if none)">
+        </div>
+        <div class="form-group span3">
+          <label>Existing Medical Conditions</label>
+          <textarea id="conditions" placeholder="e.g. Hypertension, Diabetes, Asthma, TB (leave blank if none)"></textarea>
+        </div>
+        <div class="form-group span3">
+          <label>Current Medications</label>
+          <textarea id="medications" placeholder="e.g. Amlodipine 5mg daily (leave blank if none)"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Smoking</label>
+          <select id="smoking">
+            <option value="">Select</option>
+            <option>Non-smoker</option>
+            <option>Former smoker</option>
+            <option>Current smoker</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Alcohol Use</label>
+          <select id="alcohol">
+            <option value="">Select</option>
+            <option>None</option>
+            <option>Occasional</option>
+            <option>Regular</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Vaccination Status</label>
+          <select id="vaccination">
+            <option value="">Select</option>
+            <option>Complete (basic)</option>
+            <option>Incomplete</option>
+            <option>COVID-19 Vaccinated</option>
+            <option>Not vaccinated</option>
+          </select>
+        </div>
+        <div class="form-group span3">
+          <label>For Female Patients – OB/GYN Notes</label>
+          <input type="text" id="obgyn" placeholder="e.g. G2P2, LMP: Jan 2026, Pregnant 3 months (leave blank if not applicable)">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RHU PREFERENCE -->
+  <div class="section-card" id="sec-rhu" style="display:none;">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="hicon"><i class="fas fa-hospital"></i></div>
+        <div><h6>RHU Preference</h6><p>Choose your preferred health center in Pulilan</p></div>
+      </div>
+      <button class="btn-save" onclick="save('rhu')"><i class="fas fa-floppy-disk"></i> Save</button>
+    </div>
+    <div class="section-body">
+      <div class="info-notice">
+        <i class="fas fa-circle-info"></i>
+        Pulilan, Bulacan has 4 Rural Health Units. Select your nearest or preferred RHU. You may still book appointments at any RHU.
+      </div>
+      <div class="rhu-grid">
+        <div class="rhu-card" onclick="selectRhu(this,'RHU I – Poblacion')">
+          <div class="rhu-check"><i class="fas fa-check"></i></div>
+          <div class="rhu-name"><i class="fas fa-hospital" style="color:#1e40af;margin-right:7px;font-size:14px;"></i>RHU I – Poblacion</div>
+          <div class="rhu-address">Poblacion, Pulilan, Bulacan</div>
+          <div class="rhu-hours"><i class="fas fa-clock" style="color:#9ca3af;font-size:12px;"></i>&nbsp;Mon–Fri, 8:00 AM – 5:00 PM</div>
+        </div>
+        <div class="rhu-card" onclick="selectRhu(this,'RHU II – Cutcot')">
+          <div class="rhu-check"><i class="fas fa-check"></i></div>
+          <div class="rhu-name"><i class="fas fa-hospital" style="color:#1e40af;margin-right:7px;font-size:14px;"></i>RHU II – Cutcot</div>
+          <div class="rhu-address">Cutcot, Pulilan, Bulacan</div>
+          <div class="rhu-hours"><i class="fas fa-clock" style="color:#9ca3af;font-size:12px;"></i>&nbsp;Mon–Fri, 8:00 AM – 5:00 PM</div>
+        </div>
+        <div class="rhu-card" onclick="selectRhu(this,'RHU III – Tinejero')">
+          <div class="rhu-check"><i class="fas fa-check"></i></div>
+          <div class="rhu-name"><i class="fas fa-hospital" style="color:#1e40af;margin-right:7px;font-size:14px;"></i>RHU III – Tinejero</div>
+          <div class="rhu-address">Tinejero, Pulilan, Bulacan</div>
+          <div class="rhu-hours"><i class="fas fa-clock" style="color:#9ca3af;font-size:12px;"></i>&nbsp;Mon–Fri, 8:00 AM – 5:00 PM</div>
+        </div>
+        <div class="rhu-card" onclick="selectRhu(this,'RHU IV – Tibag')">
+          <div class="rhu-check"><i class="fas fa-check"></i></div>
+          <div class="rhu-name"><i class="fas fa-hospital" style="color:#1e40af;margin-right:7px;font-size:14px;"></i>RHU IV – Tibag</div>
+          <div class="rhu-address">Tibag, Pulilan, Bulacan</div>
+          <div class="rhu-hours"><i class="fas fa-clock" style="color:#9ca3af;font-size:12px;"></i>&nbsp;Mon–Fri, 8:00 AM – 5:00 PM</div>
+        </div>
+      </div>
+      <input type="hidden" id="preferredRhu">
+      <div class="form-group" style="max-width:340px;">
+        <label>Preferred Consultation Time</label>
+        <select id="preferredTime">
+          <option value="">Select</option>
+          <option>Morning (8:00 AM – 12:00 PM)</option>
+          <option>Afternoon (1:00 PM – 5:00 PM)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHILHEALTH -->
+  <div class="section-card" id="sec-philhealth" style="display:none;">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="hicon"><i class="fas fa-id-card"></i></div>
+        <div><h6>PhilHealth</h6><p>Your national health insurance details</p></div>
+      </div>
+      <button class="btn-save" onclick="save('philhealth')"><i class="fas fa-floppy-disk"></i> Save</button>
+    </div>
+    <div class="section-body">
+      <div class="ph-card">
+        <div class="ph-gov">Republic of the Philippines</div>
+        <div class="ph-corp">Philippine Health Insurance Corporation</div>
+        <div class="ph-num" id="phNum">0000 — 0000 — 0000</div>
+        <div class="ph-row">
+          <div class="ph-field"><small>Member</small><span id="phName">—</span></div>
+          <div class="ph-field"><small>Type</small><span id="phType">—</span></div>
+          <div class="ph-field"><small>Status</small><span id="phStatus">—</span></div>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>PhilHealth ID Number (PIN)</label>
+          <input type="text" id="philhealthNum" placeholder="00-000000000-0" oninput="updatePh()">
+        </div>
+        <div class="form-group">
+          <label>Membership Type</label>
+          <select id="philhealthType" onchange="updatePh()">
+            <option value="">Select</option>
+            <option>Employed – Private</option>
+            <option>Employed – Government</option>
+            <option>Self-Employed</option>
+            <option>Indigent (4Ps / NHTS)</option>
+            <option>Senior Citizen</option>
+            <option>Lifetime Member</option>
+            <option>OFW</option>
+            <option>Kasambahay</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>PhilHealth Status</label>
+          <select id="philhealthStatus" onchange="updatePh()">
+            <option value="">Select</option>
+            <option>Active</option>
+            <option>Inactive</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Employer (if Employed)</label>
+          <input type="text" id="philhealthEmployer" placeholder="Employer or company name">
+        </div>
+        <div class="form-group span2">
+          <label>Dependents</label>
+          <input type="text" id="philhealthDependents" placeholder="e.g. Spouse, Child 1 (separate with comma)">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BENEFITS -->
+  <div class="section-card" id="sec-benefits" style="display:none;">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="hicon"><i class="fas fa-hand-holding-heart"></i></div>
+        <div><h6>Benefits & Special Classifications</h6><p>For eligibility of free or subsidized health services</p></div>
+      </div>
+      <button class="btn-save" onclick="save('benefits')"><i class="fas fa-floppy-disk"></i> Save</button>
+    </div>
+    <div class="section-body">
+      <div class="info-notice">
+        <i class="fas fa-circle-info"></i>
+        This information helps RHU staff determine your eligibility for free consultations, medicines, and other health programs in Pulilan.
+      </div>
+      <div class="toggle-row">
+        <div class="tr-label">
+          <strong>Senior Citizen (60 years old and above)</strong>
+          <span>Entitled to free medicines and priority service</span>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="isSenior" onchange="updateHeader()">
+          <span class="t-slider"></span>
+        </label>
+      </div>
+      <div class="form-group" style="margin:12px 0 20px;max-width:340px;">
+        <label>Senior Citizen ID Number</label>
+        <input type="text" id="scId" placeholder="Senior Citizen ID number (if available)">
+      </div>
+      <div class="toggle-row">
+        <div class="tr-label">
+          <strong>Person with Disability (PWD)</strong>
+          <span>Entitled to 20% discount and priority service</span>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="isPwd">
+          <span class="t-slider"></span>
+        </label>
+      </div>
+      <div class="form-grid" style="margin:12px 0 20px;">
+        <div class="form-group">
+          <label>Type of Disability</label>
+          <select id="pwdType">
+            <option value="">Select</option>
+            <option>Physical</option><option>Visual</option>
+            <option>Hearing</option><option>Mental / Psychosocial</option>
+            <option>Intellectual</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>PWD ID Number</label>
+          <input type="text" id="pwdId" placeholder="PWD ID number (if available)">
+        </div>
+      </div>
+      <div class="toggle-row">
+        <div class="tr-label">
+          <strong>4Ps Member (Pantawid Pamilyang Pilipino Program)</strong>
+          <span>DSWD conditional cash transfer program beneficiary</span>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="toggle4ps" onchange="updateHeader()">
+          <span class="t-slider"></span>
+        </label>
+      </div>
+      <div class="form-group" style="margin:12px 0 20px;max-width:340px;">
+        <label>4Ps Household ID Number</label>
+        <input type="text" id="fourPsNum" placeholder="Household ID number">
+      </div>
+      <div class="toggle-row">
+        <div class="tr-label">
+          <strong>NHTS-PR Beneficiary (Indigent / Poor Household)</strong>
+          <span>National Household Targeting System – entitled to free health services</span>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="toggleNhts">
+          <span class="t-slider"></span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div class="tr-label">
+          <strong>Malasakit Center Beneficiary</strong>
+          <span>DOH Malasakit Center – financial assistance for hospital bills</span>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="toggleMalasakit">
+          <span class="t-slider"></span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div class="tr-label">
+          <strong>Solo Parent (RA 8972)</strong>
+          <span>Registered solo parent in Pulilan, Bulacan</span>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="toggleSoloParent">
+          <span class="t-slider"></span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMERGENCY CONTACT -->
+  <div class="section-card" id="sec-emergency" style="display:none;">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="hicon"><i class="fas fa-phone"></i></div>
+        <div><h6>Emergency Contact</h6><p>Person to contact in case of emergency</p></div>
+      </div>
+      <button class="btn-save" onclick="save('emergency')"><i class="fas fa-floppy-disk"></i> Save</button>
+    </div>
+    <div class="section-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Contact Person Full Name</label>
+          <input type="text" id="ecName" placeholder="Full name">
+        </div>
+        <div class="form-group">
+          <label>Relationship</label>
+          <select id="ecRelationship">
+            <option value="">Select</option>
+            <option>Spouse</option><option>Parent</option>
+            <option>Sibling</option><option>Child</option>
+            <option>Relative</option><option>Friend</option><option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Mobile Number</label>
+          <input type="tel" id="ecMobile" placeholder="09XX XXX XXXX">
+        </div>
+        <div class="form-group">
+          <label>Alternate Number</label>
+          <input type="tel" id="ecAlt" placeholder="Optional">
+        </div>
+        <div class="form-group span2">
+          <label>Address</label>
+          <input type="text" id="ecAddress" placeholder="Full address">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACCOUNT & SECURITY -->
+  <div class="section-card" id="sec-account" style="display:none;">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="hicon"><i class="fas fa-lock"></i></div>
+        <div><h6>Account & Security</h6><p>Update your login credentials</p></div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="form-grid">
+        <div class="form-group span2">
+          <label>Email Address <span style="font-size:13px;color:#9ca3af;font-weight:400;">(used for login)</span></label>
+          <input type="email" id="accountEmail" placeholder="your@email.com">
+        </div>
+        <div class="form-group span2" style="border-top:1px solid #f3f4f6;padding-top:20px;margin-top:4px;">
+          <label style="font-size:15px;font-weight:700;color:#374151;">Change Password</label>
+        </div>
+        <div class="form-group">
+          <label>Current Password</label>
+          <input type="password" id="currentPass" placeholder="Current password">
+        </div>
+        <div class="form-group"></div>
+        <div class="form-group">
+          <label>New Password</label>
+          <input type="password" id="newPass" placeholder="New password">
+        </div>
+        <div class="form-group">
+          <label>Confirm New Password</label>
+          <input type="password" id="confirmPass" placeholder="Confirm new password">
+        </div>
+      </div>
+      <div style="margin-top:22px;">
+        <button class="btn-save" onclick="save('account')"><i class="fas fa-floppy-disk"></i> Update Password</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="modal fade simple-modal" id="successModal" tabindex="-1">
+<div class="modal-dialog modal-dialog-centered modal-sm">
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title">
+      <div class="mti mti-success"><i class="fas fa-check"></i></div> Saved
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+  </div>
+  <div class="modal-body" id="successMsg">Information saved successfully.</div>
+  <div class="modal-footer">
+    <button class="btn-dark-blue" data-bs-dismiss="modal">OK</button>
+  </div>
+</div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const user = { name: "Ashley Amira" };
+document.getElementById("avatarBtn").innerText  = user.name.charAt(0);
+document.getElementById("avatarBig").innerText  = user.name.charAt(0);
+document.getElementById("mobAvatar").innerText  = user.name.charAt(0);
+document.getElementById("mobName").innerText    = user.name;
+document.getElementById("headerName").innerText = user.name;
+
+/* HAMBURGER */
+function toggleMobileMenu() {
+  const menu = document.getElementById("mobileMenu");
+  const icon = document.getElementById("hamburgerIcon");
+  menu.classList.toggle("show");
+  icon.className = menu.classList.contains("show") ? "fas fa-times" : "fas fa-bars";
+}
+document.addEventListener("click", function(e) {
+  const menu = document.getElementById("mobileMenu");
+  const btn  = document.getElementById("hamburgerBtn");
+  if (!menu.contains(e.target) && !btn.contains(e.target)) {
+    menu.classList.remove("show");
+    document.getElementById("hamburgerIcon").className = "fas fa-bars";
+  }
+});
+
+function show(id, el) {
+  document.querySelectorAll(".section-card").forEach(s => s.style.display = "none");
+  document.getElementById("sec-" + id).style.display = "block";
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  el.classList.add("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function selectRhu(card, name) {
+  document.querySelectorAll(".rhu-card").forEach(c => c.classList.remove("selected"));
+  card.classList.add("selected");
+  document.getElementById("preferredRhu").value = name;
+  document.getElementById("hRhu").innerText = name.replace("RHU ","");
+  document.getElementById("headerSub").innerText = "Pulilan Health Center · PHC-2026-001 · " + name;
+}
+
+function updatePh() {
+  document.getElementById("phNum").innerText    = document.getElementById("philhealthNum").value || "0000 — 0000 — 0000";
+  document.getElementById("phName").innerText   = user.name;
+  document.getElementById("phType").innerText   = document.getElementById("philhealthType").value || "—";
+  document.getElementById("phStatus").innerText = document.getElementById("philhealthStatus").value || "—";
+}
+
+function updateHeader() {
+  const blood  = document.getElementById("bloodType")?.value;
+  const is4ps  = document.getElementById("toggle4ps")?.checked;
+  const senior = document.getElementById("isSenior")?.checked;
+  if (blood) document.getElementById("hBlood").innerText = blood;
+  document.getElementById("h4ps").innerText    = is4ps  ? "Yes" : "No";
+  document.getElementById("hSenior").innerText = senior ? "Yes" : "No";
+}
+
+const tracked = ["firstName","lastName","dob","sex","civilStatus","mobile","barangay","street","bloodType","philhealthNum","ecName","ecMobile"];
+function calcPct() {
+  let n = tracked.filter(id => { const el = document.getElementById(id); return el && el.value.trim(); }).length;
+  const pct = Math.round((n / tracked.length) * 100);
+  document.getElementById("pctFill").style.width = pct + "%";
+  document.getElementById("pctLabel").innerText  = pct + "%";
+}
+
+const msgs = {
+  personal:"Personal information saved.",
+  contact:"Contact details saved.",
+  health:"Health information saved.",
+  rhu:"RHU preference saved.",
+  philhealth:"PhilHealth information saved.",
+  benefits:"Benefits and classifications saved.",
+  emergency:"Emergency contact saved.",
+  account:"Password updated successfully."
+};
+
+function save(sec) {
+  const data = JSON.parse(localStorage.getItem("profileData") || "{}");
+  document.querySelectorAll("input:not([type=password]), select, textarea").forEach(el => {
+    if (el.id) data[el.id] = el.value;
+  });
+  ["toggle4ps","toggleNhts","toggleMalasakit","toggleSoloParent","isSenior","isPwd"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) data[id] = el.checked;
+  });
+  localStorage.setItem("profileData", JSON.stringify(data));
+  updateHeader(); calcPct();
+  document.getElementById("successMsg").innerText = msgs[sec] || "Saved.";
+  new bootstrap.Modal(document.getElementById("successModal")).show();
+}
+
+function load() {
+  const data = JSON.parse(localStorage.getItem("profileData") || "{}");
+  Object.keys(data).forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (el.type === "checkbox") el.checked = data[id] === true || data[id] === "true";
+    else el.value = data[id];
+  });
+  const rhu = data["preferredRhu"];
+  if (rhu) {
+    document.querySelectorAll(".rhu-card").forEach(c => {
+      if (c.querySelector(".rhu-name").textContent.trim() === rhu) c.classList.add("selected");
+    });
+    document.getElementById("hRhu").innerText = rhu.replace("RHU ","");
+  }
+  updatePh(); updateHeader(); calcPct();
+}
+
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Book Appointment | Pulilan Health Center</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+font-family:'Inter',sans-serif;
+background:#f6f8fb;
+margin:0;
+}
+
+.navbar{
+position:sticky;
+top:0;
+z-index:1000;
+background:white;
+border-bottom:3px solid #1e40af;
+}
+
+.nav-container{
+width:100%;
+padding:14px 60px;
+display:flex;
+align-items:center;
+}
+
+.logo-area{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.menu{
+display:flex;
+gap:15px;
+align-items:center;
+margin-left:auto;
+}
+
+.menu a{
+text-decoration:none;
+color:#374151;
+font-weight:500;
+padding:8px 16px;
+border-radius:8px;
+transition:0.2s;
+white-space:nowrap;
+}
+
+.menu a.active{
+background:#1e40af;
+color:white;
+}
+
+.menu a:hover{
+background:#eef2ff;
+}
+
+.avatar{
+width:34px;
+height:34px;
+background:#1e40af;
+color:white;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:600;
+margin-left:10px;
+flex-shrink:0;
+}
+
+/* HAMBURGER */
+.hamburger{
+display:none;
+background:none;
+border:1px solid #e5e7eb;
+border-radius:8px;
+padding:6px 10px;
+cursor:pointer;
+color:#374151;
+font-size:15px;
+margin-left:auto;
+}
+
+/* MOBILE DRAWER */
+.mobile-drawer{
+display:none;
+flex-direction:column;
+background:white;
+border-top:1px solid #e5e7eb;
+padding:10px 16px 14px;
+gap:4px;
+position:absolute;
+width:100%;
+top:100%;
+left:0;
+z-index:999;
+box-shadow:0 8px 24px rgba(0,0,0,0.08);
+}
+
+.mobile-drawer.open{ display:flex; }
+
+.mobile-drawer a{
+text-decoration:none;
+color:#374151;
+font-weight:500;
+font-size:14px;
+padding:10px 14px;
+border-radius:8px;
+transition:0.2s;
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.mobile-drawer a.active{
+background:#1e40af;
+color:white;
+}
+
+.mobile-drawer a:not(.active):hover{
+background:#eef2ff;
+}
+
+.mobile-drawer hr{
+border:none;
+border-top:1px solid #e5e7eb;
+margin:6px 0;
+}
+
+.book-container{
+max-width:950px;
+margin:auto;
+padding:60px 20px 80px;
+}
+
+.book-card{
+background:white;
+border-radius:14px;
+padding:45px;
+border:1px solid #e5e7eb;
+box-shadow:0 8px 25px rgba(0,0,0,0.05);
+}
+
+.book-title{
+font-weight:600;
+margin-bottom:5px;
+}
+
+.book-sub{
+color:#6b7280;
+margin-bottom:30px;
+}
+
+.form-control{
+padding:12px;
+border-radius:8px;
+}
+
+/* PRIORITY NOTICE BOX */
+.priority-notice {
+  background: linear-gradient(135deg, #fef9c3, #fef3c7);
+  border: 1.5px solid #f59e0b;
+  border-radius: 10px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  font-size: 14px;
+  color: #92400e;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.priority-notice i {
+  font-size: 20px;
+  color: #d97706;
+  flex-shrink: 0;
+}
+.priority-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #f59e0b;
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 20px;
+  margin-left: 6px;
+  letter-spacing: 0.04em;
+  vertical-align: middle;
+}
+
+.time-grid{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:12px;
+margin-top:18px;
+margin-bottom:10px;
+}
+
+.time-slot{
+border:1px solid #d1d5db;
+padding:12px;
+border-radius:8px;
+text-align:center;
+cursor:pointer;
+font-size:14px;
+font-weight:500;
+transition:0.2s;
+}
+
+.time-slot:hover{ background:#eef2ff; }
+.time-slot.active{ background:#1e40af; color:white; border:none; }
+
+.btn-main{
+background:#1e40af;
+color:white;
+border:none;
+padding:14px;
+border-radius:8px;
+width:100%;
+margin-top:25px;
+font-weight:600;
+font-family:'Inter',sans-serif;
+cursor:pointer;
+font-size:15px;
+}
+.btn-main:hover{ background:#1d4ed8; }
+
+/* MODALS */
+.pro-modal{
+border-radius:16px;
+border:none;
+box-shadow:0 25px 60px rgba(15,23,42,0.22);
+overflow:hidden;
+font-family:'Inter',sans-serif;
+}
+
+.confirm-modal .modal-header{
+background:#f8fafc;
+padding:20px 24px;
+border-bottom:1px solid #e5e7eb;
+}
+.confirm-modal .modal-title{
+font-weight:600;
+font-size:17px;
+color:#1f2937;
+display:flex;
+align-items:center;
+gap:10px;
+}
+.confirm-modal .modal-title .title-icon{
+width:34px;
+height:34px;
+background:#dbeafe;
+border-radius:8px;
+display:flex;
+align-items:center;
+justify-content:center;
+color:#1e40af;
+font-size:15px;
+}
+.confirm-modal .modal-body{ padding:22px 24px 18px; }
+.confirm-note{ font-size:13px; color:#6b7280; margin-bottom:14px; }
+
+.summary-box{
+background:#f9fafb;
+border-radius:12px;
+padding:4px 0;
+border:1px solid #e5e7eb;
+overflow:hidden;
+}
+.summary-row{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:13px 18px;
+font-size:14px;
+border-bottom:1px dashed #e5e7eb;
+gap:12px;
+}
+.summary-row:last-child{ border-bottom:none; }
+.summary-row .s-label{
+display:flex;
+align-items:center;
+gap:9px;
+color:#6b7280;
+font-weight:500;
+flex-shrink:0;
+}
+.summary-row .s-label .s-icon{
+width:28px;
+height:28px;
+background:#dbeafe;
+border-radius:7px;
+display:flex;
+align-items:center;
+justify-content:center;
+color:#1e40af;
+font-size:12px;
+flex-shrink:0;
+}
+.summary-row strong{
+font-weight:600;
+color:#111827;
+font-size:14px;
+text-align:right;
+}
+.confirm-modal .modal-footer{
+padding:16px 24px 20px;
+border-top:1px solid #e5e7eb;
+gap:10px;
+justify-content:flex-end;
+background:white;
+}
+
+/* PRIORITY ROW IN MODAL */
+.priority-row-modal {
+  background: #fffbeb;
+  border: 1.5px solid #fde68a;
+  border-radius: 10px;
+  padding: 11px 16px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  color: #92400e;
+  font-weight: 500;
+}
+.priority-row-modal i { color: #f59e0b; font-size: 16px; flex-shrink: 0; }
+
+.alert-modal .modal-header{ padding:0; border:none; }
+
+.alert-header-band{
+width:100%;
+padding:30px 28px 22px;
+text-align:center;
+position:relative;
+overflow:hidden;
+}
+.alert-header-band.band-error  { background:linear-gradient(135deg,#7f1d1d 0%,#dc2626 100%); }
+.alert-header-band.band-success{ background:linear-gradient(135deg,#064e3b 0%,#059669 100%); }
+.alert-header-band::before{
+content:'';position:absolute;
+top:-40px;right:-40px;
+width:150px;height:150px;
+border-radius:50%;
+background:rgba(255,255,255,0.06);
+}
+.alert-header-band::after{
+content:'';position:absolute;
+bottom:-45px;left:-30px;
+width:120px;height:120px;
+border-radius:50%;
+background:rgba(255,255,255,0.05);
+}
+.alert-icon-wrap{
+width:68px;height:68px;
+border-radius:50%;
+background:rgba(255,255,255,0.18);
+border:3px solid rgba(255,255,255,0.35);
+display:flex;align-items:center;justify-content:center;
+margin:0 auto 12px;
+font-size:26px;color:white;
+position:relative;z-index:1;
+animation:popIn 0.38s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes popIn{
+from{transform:scale(0.4);opacity:0;}
+to  {transform:scale(1);  opacity:1;}
+}
+.alert-band-title{
+color:white;font-size:18px;font-weight:700;
+margin:0;position:relative;z-index:1;
+font-family:'Inter',sans-serif;
+}
+.alert-close-btn{
+position:absolute;top:12px;right:14px;
+width:28px;height:28px;border-radius:50%;
+background:rgba(255,255,255,0.2);border:none;
+color:white;font-size:12px;cursor:pointer;
+display:flex;align-items:center;justify-content:center;
+transition:0.2s;z-index:2;
+}
+.alert-close-btn:hover{ background:rgba(255,255,255,0.35); }
+.alert-modal .modal-body{ padding:22px 28px 10px;text-align:center; }
+.alert-msg{
+font-size:14px;color:#374151;
+line-height:1.65;font-weight:500;
+font-family:'Inter',sans-serif;
+}
+.alert-modal .modal-footer{
+border-top:1px solid #e5e7eb;
+padding:16px 24px 22px;
+justify-content:center;
+background:#f8fafc;
+}
+
+.btn-dark-blue{
+background:#1e40af;color:white;border:none;
+padding:10px 24px;border-radius:8px;
+font-weight:600;font-size:14px;
+font-family:'Inter',sans-serif;
+cursor:pointer;transition:0.2s;
+display:inline-flex;align-items:center;gap:7px;
+}
+.btn-dark-blue:hover{
+background:#1d4ed8;
+box-shadow:0 4px 14px rgba(30,64,175,0.28);
+}
+.btn-cancel-outline{
+background:transparent;color:#6b7280;
+border:1.5px solid #e5e7eb;
+padding:10px 20px;border-radius:8px;
+font-weight:500;font-size:14px;
+font-family:'Inter',sans-serif;
+cursor:pointer;transition:0.2s;
+}
+.btn-cancel-outline:hover{ background:#f3f4f6;color:#374151; }
+
+/* ══════════════════════════════
+   RESPONSIVE
+══════════════════════════════ */
+
+/* Tablet: hide nav links, show hamburger */
+@media (max-width: 900px) {
+  .nav-container { padding: 14px 20px; }
+  .menu { display: none; }
+  .hamburger { display: flex; align-items: center; }
+}
+
+/* Tablet: time grid 4 columns */
+@media (max-width: 768px) {
+  .book-container { padding: 30px 15px 60px; }
+  .book-card { padding: 28px 20px; }
+  .time-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+}
+
+/* Mobile */
+@media (max-width: 560px) {
+  .book-container { padding: 20px 12px 50px; }
+  .book-card { padding: 22px 16px; }
+
+  .time-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .time-slot { font-size: 12px; padding: 10px 6px; }
+
+  .priority-notice { flex-direction: column; gap: 8px; align-items: flex-start; }
+
+  .confirm-modal .modal-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-dark-blue,
+  .btn-cancel-outline {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .alert-modal .modal-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* Extra small */
+@media (max-width: 380px) {
+  .time-grid { grid-template-columns: repeat(2, 1fr); }
+  .time-slot { font-size: 11px; padding: 9px 4px; }
+  .book-card { padding: 18px 12px; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" style="position:relative;">
+<div class="nav-container">
+  <div class="logo-area">
+    <img src="images/logo.png" style="width:45px;height:45px;border-radius:8px;">
+    <div>
+      <strong>Pulilan Health Center</strong><br>
+      <small style="color:#6b7280;">Appointment System</small>
+    </div>
+  </div>
+
+  <!-- Desktop menu -->
+  <div class="menu">
+    <a href="dashboard.html">Dashboard</a>
+    <a class="active" href="book.html">Book Appointment</a>
+    <a href="appointments.html">My Appointments</a>
+    <a href="queue.html">Queue Status</a>
+    <div class="dropdown">
+      <div class="avatar" data-bs-toggle="dropdown">A</div>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><a class="dropdown-item" href="profile.html"><i class="fa fa-user me-2"></i>Profile</a></li>
+        <li><a class="dropdown-item text-danger" href="login.html"><i class="fa fa-right-from-bracket me-2"></i>Logout</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Hamburger -->
+  <button class="hamburger" id="hamburgerBtn">
+    <i class="fas fa-bars" id="hamburgerIcon"></i>
+  </button>
+</div>
+
+<!-- Mobile drawer -->
+<div class="mobile-drawer" id="mobileDrawer">
+  <a href="dashboard.html"><i class="fas fa-house"></i> Dashboard</a>
+  <a class="active" href="book.html"><i class="fas fa-calendar-plus"></i> Book Appointment</a>
+  <a href="appointments.html"><i class="fas fa-calendar-check"></i> My Appointments</a>
+  <a href="queue.html"><i class="fas fa-list-ol"></i> Queue Status</a>
+  <hr>
+  <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+  <a href="login.html" style="color:#dc2626;"><i class="fas fa-right-from-bracket"></i> Logout</a>
+</div>
+</nav>
+
+<div class="book-container">
+<div class="book-card">
+<h4 class="book-title">Book an Appointment</h4>
+<p class="book-sub">Schedule your visit to Pulilan Health Center</p>
+
+<!-- PRIORITY NOTICE -->
+<div class="priority-notice" id="priorityNotice" style="display:none;">
+  <i class="fas fa-star"></i>
+  <div>
+    You are eligible for the <strong>Priority Lane</strong>
+    <span class="priority-badge"><i class="fas fa-star"></i> PRIORITY</span>
+    — your queue number will start with <strong>P-</strong> and will be served ahead of the regular queue.
+  </div>
+</div>
+
+<form id="appointmentForm">
+<div class="mb-3">
+<label>Health Center *</label>
+<select class="form-control" id="healthCenter" required>
+<option value="">Select a health center</option>
+<option>RHU I – Poblacion</option>
+<option>RHU II – Cutcot</option>
+<option>RHU III – Tinejero</option>
+<option>RHU IV – Tibag</option>
+</select>
+</div>
+
+<div class="mb-3">
+<label>Service *</label>
+<select class="form-control" id="service" required>
+<option value="">Select a service</option>
+<option>General Consultation</option>
+<option>Vaccination</option>
+<option>Prenatal Care</option>
+<option>Child Immunization</option>
+<option>Family Planning</option>
+</select>
+</div>
+
+<div class="mb-3">
+<label>Date *</label>
+<input type="text" class="form-control" id="date" placeholder="Select appointment date" required>
+</div>
+
+<label>Available Time Slots *</label>
+<div style="margin-top:10px;font-size:14px;color:#374151;flex-wrap:wrap;display:flex;gap:16px;align-items:center;">
+  <span>Estimated Queue: <strong id="queuePreview">A-001</strong></span>
+  <span style="color:#6b7280;">Slots left: <strong id="slotLeft">10</strong></span>
+</div>
+
+<div class="time-grid">
+<div class="time-slot">08:00 AM</div>
+<div class="time-slot">08:30 AM</div>
+<div class="time-slot">09:00 AM</div>
+<div class="time-slot">09:30 AM</div>
+<div class="time-slot">10:00 AM</div>
+<div class="time-slot">10:30 AM</div>
+<div class="time-slot">11:00 AM</div>
+<div class="time-slot">11:30 AM</div>
+<div class="time-slot">01:00 PM</div>
+<div class="time-slot">01:30 PM</div>
+<div class="time-slot">02:00 PM</div>
+<div class="time-slot">02:30 PM</div>
+<div class="time-slot">03:00 PM</div>
+<div class="time-slot">03:30 PM</div>
+<div class="time-slot">04:00 PM</div>
+</div>
+
+<button type="submit" class="btn-main" id="bookBtn">
+Confirm Appointment
+</button>
+</form>
+</div>
+</div>
+
+<!-- CONFIRMATION MODAL -->
+<div class="modal fade" id="summaryModal" tabindex="-1">
+<div class="modal-dialog modal-dialog-centered">
+<div class="modal-content pro-modal confirm-modal">
+<div class="modal-header">
+<h5 class="modal-title">
+<div class="title-icon"><i class="fa-solid fa-calendar-check"></i></div>
+Confirm Appointment
+</h5>
+<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
+<p class="confirm-note">Please review your appointment details before confirming.</p>
+
+<div class="priority-row-modal" id="priorityRowModal" style="display:none;">
+  <i class="fas fa-star"></i>
+  <span>You are on the <strong>Priority Lane</strong> — queue number starts with <strong>P-</strong></span>
+</div>
+
+<div class="summary-box">
+<div class="summary-row">
+<div class="s-label"><div class="s-icon"><i class="fas fa-hospital"></i></div>Health Center</div>
+<strong id="sumCenter"></strong>
+</div>
+<div class="summary-row">
+<div class="s-label"><div class="s-icon"><i class="fas fa-stethoscope"></i></div>Service</div>
+<strong id="sumService"></strong>
+</div>
+<div class="summary-row">
+<div class="s-label"><div class="s-icon"><i class="fas fa-calendar"></i></div>Date</div>
+<strong id="sumDate"></strong>
+</div>
+<div class="summary-row">
+<div class="s-label"><div class="s-icon"><i class="fas fa-clock"></i></div>Time</div>
+<strong id="sumTime"></strong>
+</div>
+<div class="summary-row">
+<div class="s-label"><div class="s-icon"><i class="fas fa-ticket"></i></div>Queue Type</div>
+<strong id="sumQueueType">Regular Queue</strong>
+</div>
+</div>
+</div>
+<div class="modal-footer">
+<button class="btn-cancel-outline" id="cancelSummary" data-bs-dismiss="modal">Cancel</button>
+<button class="btn-dark-blue" id="confirmBooking">
+<i class="fas fa-check"></i> Confirm Booking
+</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ERROR MODAL -->
+<div class="modal fade" id="errorModal" tabindex="-1">
+<div class="modal-dialog modal-dialog-centered">
+<div class="modal-content pro-modal alert-modal">
+<div class="modal-header">
+<div class="alert-header-band band-error">
+<button class="alert-close-btn" data-bs-dismiss="modal"><i class="fas fa-times"></i></button>
+<div class="alert-icon-wrap"><i class="fas fa-times-circle"></i></div>
+<p class="alert-band-title">Something Went Wrong</p>
+</div>
+</div>
+<div class="modal-body">
+<div class="alert-msg" id="errorMessage"></div>
+</div>
+<div class="modal-footer">
+<button class="btn-dark-blue" data-bs-dismiss="modal">
+<i class="fas fa-redo"></i> Try Again
+</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="modal fade" id="successModal" tabindex="-1">
+<div class="modal-dialog modal-dialog-centered">
+<div class="modal-content pro-modal alert-modal">
+<div class="modal-header">
+<div class="alert-header-band band-success">
+<button class="alert-close-btn" data-bs-dismiss="modal"><i class="fas fa-times"></i></button>
+<div class="alert-icon-wrap"><i class="fas fa-check"></i></div>
+<p class="alert-band-title">Appointment Confirmed!</p>
+</div>
+</div>
+<div class="modal-body">
+<div class="alert-msg" id="successMessage"></div>
+</div>
+<div class="modal-footer">
+<button class="btn-dark-blue" id="successOkBtn">
+<i class="fas fa-arrow-right"></i> Go to Dashboard
+</button>
+</div>
+</div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+/* USER */
+let user = { name:"Ashley Amira" };
+document.querySelector(".avatar").innerText = user.name.charAt(0);
+
+/* HAMBURGER */
+const hamburgerBtn  = document.getElementById("hamburgerBtn");
+const hamburgerIcon = document.getElementById("hamburgerIcon");
+const mobileDrawer  = document.getElementById("mobileDrawer");
+
+hamburgerBtn.addEventListener("click", () => {
+  const isOpen = mobileDrawer.classList.toggle("open");
+  hamburgerIcon.className = isOpen ? "fas fa-times" : "fas fa-bars";
+});
+
+document.addEventListener("click", (e) => {
+  if (!hamburgerBtn.contains(e.target) && !mobileDrawer.contains(e.target)) {
+    mobileDrawer.classList.remove("open");
+    hamburgerIcon.className = "fas fa-bars";
+  }
+});
+
+/* PRIORITY STATUS */
+const profileData = JSON.parse(localStorage.getItem("profileData") || "{}");
+
+const isSenior = profileData.isSenior === true || profileData.isSenior === "true"
+               || profileData.seniorCitizen === "Yes";
+const isPwd    = profileData.isPwd === true    || profileData.isPwd === "true"
+               || (profileData.pwd && profileData.pwd !== "" && profileData.pwd !== "Not PWD");
+
+const isPriority = isSenior || isPwd;
+
+if (isPriority) {
+  document.getElementById("priorityNotice").style.display = "flex";
+  document.getElementById("queuePreview").innerText = "P-001";
+  document.getElementById("sumQueueType").innerText = "Priority Lane (P-)";
+  document.getElementById("priorityRowModal").style.display = "flex";
+}
+
+/* ALERT FUNCTIONS */
+function showError(message) {
+  document.getElementById('errorMessage').textContent = message;
+  new bootstrap.Modal(document.getElementById('errorModal')).show();
+}
+
+function showSuccess(message, redirectUrl = null) {
+  document.getElementById('successMessage').innerHTML = message.replace(/\n/g,'<br>');
+  new bootstrap.Modal(document.getElementById('successModal')).show();
+  document.getElementById('successOkBtn').onclick = function() {
+    bootstrap.Modal.getInstance(document.getElementById('successModal')).hide();
+    if (redirectUrl) window.location.href = redirectUrl;
+  };
+}
+
+/* DATE PICKER */
+flatpickr("#date",{
+  minDate:"today",
+  dateFormat:"F j, Y",
+  disable:[ function(date){ return (date.getDay()===0||date.getDay()===6); } ]
+});
+
+/* TIME SLOT SELECT */
+let selectedTime = "";
+document.querySelectorAll(".time-slot").forEach(slot=>{
+  slot.onclick = function(){
+    document.querySelectorAll(".time-slot").forEach(s=>s.classList.remove("active"));
+    this.classList.add("active");
+    selectedTime = this.innerText.split("\n")[0].trim();
+  };
+});
+
+/* QUEUE GENERATOR */
+function generateQueue(center) {
+  const prefix = isPriority ? "P" : "A";
+  const key    = center + "_" + prefix + "_queue";
+  let num      = parseInt(localStorage.getItem(key)) || 1;
+  const queue  = prefix + "-" + String(num).padStart(3,"0");
+  localStorage.setItem(key, num + 1);
+  return queue;
+}
+
+/* FORM SUBMIT */
+document.getElementById("appointmentForm").addEventListener("submit", function(e){
+  e.preventDefault();
+
+  let existingAppointment = localStorage.getItem("appointment");
+  if (existingAppointment) {
+    showError("You already have an appointment.\nPlease check My Appointments.");
+    return;
+  }
+
+  const center  = document.getElementById("healthCenter").value;
+  const service = document.getElementById("service").value;
+  const date    = document.getElementById("date").value;
+  const btn     = document.getElementById("bookBtn");
+
+  if (!center || !service || !date) {
+    showError("Please complete all required fields.");
+    return;
+  }
+  if (!selectedTime) {
+    showError("Please select a time slot.");
+    return;
+  }
+
+  btn.innerText = "Processing...";
+  btn.disabled  = true;
+
+  document.getElementById("sumCenter").innerText  = center;
+  document.getElementById("sumService").innerText = service;
+  document.getElementById("sumDate").innerText    = date;
+  document.getElementById("sumTime").innerText    = selectedTime;
+
+  document.getElementById("priorityRowModal").style.display = isPriority ? "flex" : "none";
+  document.getElementById("sumQueueType").innerText = isPriority
+    ? "Priority Lane (P-)" : "Regular Queue (A-)";
+
+  let modal = new bootstrap.Modal(document.getElementById("summaryModal"));
+  modal.show();
+
+  document.getElementById("confirmBooking").onclick = function(){
+    const appointment = {
+      center,
+      service,
+      date,
+      time: selectedTime,
+      queue: generateQueue(center),
+      isPriority,
+      priorityReason: isSenior ? "Senior Citizen" : isPwd ? "PWD" : ""
+    };
+    localStorage.setItem("appointment", JSON.stringify(appointment));
+    modal.hide();
+    btn.innerText = "Confirm Appointment";
+    btn.disabled  = false;
+
+    const qLabel = isPriority
+      ? "Your <strong>Priority</strong> queue number: <strong>" + appointment.queue + "</strong>"
+      : "Your queue number: <strong>" + appointment.queue + "</strong>";
+
+    showSuccess("Appointment booked successfully!\n" + qLabel, "dashboard.html");
+  };
+
+  document.getElementById("cancelSummary").onclick = function(){
+    btn.innerText = "Confirm Appointment";
+    btn.disabled  = false;
+  };
+});
+
+/* QUEUE PREVIEW */
+let previewNumber = parseInt(localStorage.getItem("queueNumber")) || 1;
+const prefix = isPriority ? "P" : "A";
+document.getElementById("queuePreview").innerText = prefix + "-" + String(previewNumber).padStart(3,"0");
+
+let slotsLeft = Math.max(0, 20 - previewNumber);
+document.getElementById("slotLeft").innerText = slotsLeft;
+
+/* SLOT AVAILABILITY */
+document.querySelectorAll(".time-slot").forEach(slot=>{
+  let remaining = Math.floor(Math.random()*5);
+  if (remaining === 0) {
+    slot.style.opacity = "0.4";
+    slot.innerHTML += "<br><small>(FULL)</small>";
+    slot.style.pointerEvents = "none";
+  } else {
+    slot.innerHTML += "<br><small>("+remaining+" left)</small>";
+  }
+});
+
+</script>
+</body>
+</html>

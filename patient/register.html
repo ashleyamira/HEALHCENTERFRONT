@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Register | Pulilan Health Center</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+font-family:'Inter',sans-serif;
+background:#f8fafc;
+}
+
+/* NAVBAR */
+.navbar{
+background:white;
+padding:14px 60px;
+border-bottom:3px solid #1e40af;
+}
+
+.nav-container{
+width:100%;
+display:flex;
+align-items:center;
+justify-content:space-between;
+}
+
+.logo-area{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.home-link{
+font-weight:600;
+color:#2563eb;
+text-decoration:none;
+font-size:16px;
+white-space:nowrap;
+}
+
+.home-link:hover{
+color:black;
+}
+
+/* REGISTER SECTION */
+.register-section{
+min-height:90vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px;
+}
+
+.register-card{
+background:white;
+padding:40px;
+border-radius:14px;
+width:100%;
+max-width:460px;
+box-shadow:0 12px 30px rgba(0,0,0,0.08);
+}
+
+.register-header{
+display:flex;
+align-items:center;
+gap:12px;
+margin-bottom:25px;
+}
+
+.register-header h4{
+margin:0;
+font-weight:600;
+}
+
+.register-header small{
+color:#6b7280;
+}
+
+/* FORM */
+.form-label{
+font-weight:500;
+margin-bottom:6px;
+}
+
+.form-control{
+padding:12px;
+padding-right:45px;
+border-radius:8px;
+font-size:15px;
+}
+
+.form-control:focus{
+border-color:#1e40af;
+box-shadow:0 0 0 3px rgba(30,64,175,0.15);
+}
+
+/* PASSWORD BOX */
+.password-box{
+position:relative;
+}
+
+.password-box i{
+position:absolute;
+right:15px;
+top:50%;
+transform:translateY(-50%);
+cursor:pointer;
+color:#6b7280;
+}
+
+.password-box i:hover{
+color:#1e40af;
+}
+
+/* PASSWORD STRENGTH */
+.strength{
+font-size:13px;
+margin-top:5px;
+}
+
+/* ERROR */
+.error{
+color:#dc2626;
+font-size:13px;
+margin-top:4px;
+}
+
+/* BUTTON */
+.btn-main{
+background:#1e40af;
+color:white;
+border:none;
+padding:14px;
+border-radius:8px;
+font-weight:600;
+width:100%;
+margin-top:12px;
+font-size:17px;
+}
+
+.btn-main:hover{
+background:#1d4ed8;
+}
+
+/* LOGIN LINK */
+.login-link{
+text-align:center;
+margin-top:18px;
+font-size:14px;
+}
+
+.login-link a{
+color:#1e40af;
+font-weight:600;
+text-decoration:none;
+}
+
+.login-link a:hover{
+text-decoration:underline;
+}
+
+/* ══════════════════════════════
+   RESPONSIVE
+══════════════════════════════ */
+
+@media (max-width: 768px) {
+  .navbar { padding: 14px 20px; }
+}
+
+@media (max-width: 480px) {
+  .navbar { padding: 12px 16px; }
+
+  .logo-area img { width: 40px; height: 40px; }
+  .logo-area strong { font-size: 14px; }
+  .logo-area small { font-size: 11px; }
+
+  .home-link { font-size: 14px; }
+
+  .register-card {
+    padding: 28px 20px;
+    border-radius: 12px;
+  }
+
+  .register-header img { width: 44px; height: 44px; }
+  .register-header h4 { font-size: 17px; }
+
+  .form-control { font-size: 14px; }
+
+  .btn-main { font-size: 15px; padding: 13px; }
+}
+
+@media (max-width: 360px) {
+  .register-card { padding: 22px 14px; }
+
+  .register-header { gap: 8px; }
+  .register-header img { width: 38px; height: 38px; }
+  .register-header h4 { font-size: 15px; }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="logo-area">
+      <img src="images/logo.png" style="width:55px;height:55px;border-radius:10px;">
+      <div>
+        <strong>Pulilan Health Center</strong><br>
+        <small>Appointment System</small>
+      </div>
+    </div>
+    <a href="index.html" class="home-link">Home</a>
+  </div>
+</nav>
+
+<!-- REGISTER SECTION -->
+<section class="register-section">
+  <div class="register-card">
+
+    <div class="register-header">
+      <img src="images/logo.png" style="width:55px;height:55px;border-radius:10px;">
+      <div>
+        <h4>Create Account</h4>
+        <small>Pulilan Health Center Registration</small>
+      </div>
+    </div>
+
+    <form id="registerForm">
+
+      <div class="mb-3">
+        <label class="form-label">Full Name</label>
+        <input type="text" class="form-control" placeholder="Enter your full name" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+        <div id="emailError" class="error"></div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <div class="password-box">
+          <input type="password" class="form-control" id="password" placeholder="Create password" required>
+          <i class="fa-solid fa-eye" id="togglePassword"></i>
+        </div>
+        <div id="strengthText" class="strength"></div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Confirm Password</label>
+        <div class="password-box">
+          <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm password" required>
+          <i class="fa-solid fa-eye" id="toggleConfirm"></i>
+        </div>
+        <div id="matchError" class="error"></div>
+      </div>
+
+      <button class="btn-main">
+        <i class="fa-solid fa-user-plus"></i> Register
+      </button>
+
+    </form>
+
+    <div class="login-link">
+      Already have an account?
+      <a href="login.html">Login here</a>
+    </div>
+
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+/* PASSWORD TOGGLE */
+function togglePassword(inputId, iconId){
+  const input = document.getElementById(inputId);
+  const icon  = document.getElementById(iconId);
+  icon.onclick = function(){
+    const type = input.type === "password" ? "text" : "password";
+    input.type = type;
+    this.classList.toggle("fa-eye-slash");
+  };
+}
+
+togglePassword("password", "togglePassword");
+togglePassword("confirmPassword", "toggleConfirm");
+
+/* PASSWORD STRENGTH */
+const password     = document.getElementById("password");
+const strengthText = document.getElementById("strengthText");
+
+password.addEventListener("keyup", function(){
+  const value = password.value;
+  if(value.length < 6){
+    strengthText.innerHTML = "Weak password";
+    strengthText.style.color = "red";
+  } else if(value.match(/[A-Z]/) && value.match(/[0-9]/)){
+    strengthText.innerHTML = "Strong password";
+    strengthText.style.color = "green";
+  } else {
+    strengthText.innerHTML = "Medium password";
+    strengthText.style.color = "orange";
+  }
+});
+
+/* PASSWORD MATCH */
+const confirmPassword = document.getElementById("confirmPassword");
+const matchError      = document.getElementById("matchError");
+
+confirmPassword.addEventListener("keyup", function(){
+  if(confirmPassword.value !== password.value){
+    matchError.innerHTML = "Passwords do not match";
+  } else {
+    matchError.innerHTML = "";
+  }
+});
+
+/* EMAIL VALIDATION */
+const email      = document.getElementById("email");
+const emailError = document.getElementById("emailError");
+
+email.addEventListener("keyup", function(){
+  const pattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+  if(!email.value.match(pattern)){
+    emailError.innerHTML = "Please enter a valid email";
+  } else {
+    emailError.innerHTML = "";
+  }
+});
+
+/* FINAL FORM VALIDATION */
+document.getElementById("registerForm").addEventListener("submit", function(e){
+  const emailVal    = document.getElementById("email").value;
+  const passVal     = document.getElementById("password").value;
+  const confirmVal  = document.getElementById("confirmPassword").value;
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if(!emailVal.match(emailPattern)){
+    e.preventDefault();
+    document.getElementById("emailError").innerHTML = "Please enter a valid email";
+    return;
+  }
+
+  if(passVal.length < 6){
+    e.preventDefault();
+    document.getElementById("strengthText").innerHTML = "Password must be at least 6 characters";
+    document.getElementById("strengthText").style.color = "red";
+    return;
+  }
+
+  if(passVal !== confirmVal){
+    e.preventDefault();
+    document.getElementById("matchError").innerHTML = "Passwords do not match";
+    return;
+  }
+
+  alert("Registration successful! You can now login.");
+});
+
+</script>
+</body>
+</html>

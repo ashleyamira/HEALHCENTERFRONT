@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Queue Status | Pulilan Health Center</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+* { box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: #f6f8fb; margin: 0; }
+
+/* ── NAVBAR ── */
+.navbar {
+  position: sticky; top: 0; z-index: 1000;
+  background: white; border-bottom: 3px solid #1e40af;
+  box-shadow: 0 2px 10px rgba(30,64,175,0.07);
+}
+.nav-container {
+  width: 100%; padding: 14px 60px;
+  display: flex; align-items: center; position: relative;
+}
+.logo-area { display: flex; align-items: center; gap: 12px; }
+.menu { display: flex; gap: 15px; align-items: center; margin-left: auto; }
+.menu a {
+  text-decoration: none; color: #374151; font-weight: 500;
+  padding: 8px 16px; border-radius: 8px; transition: 0.2s;
+}
+.menu a.active { background: #1e40af; color: white; }
+.menu a:hover  { background: #eef2ff; }
+.avatar {
+  width: 34px; height: 34px; background: #1e40af; color: white;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-weight: 600; cursor: pointer; margin-left: 10px;
+}
+
+/* Hamburger */
+.hamburger-btn {
+  display: none; background: none; border: none;
+  font-size: 22px; color: #374151; cursor: pointer;
+  margin-left: auto; padding: 4px;
+}
+.mobile-menu {
+  display: none; position: absolute; top: 100%; left: 0; right: 0;
+  background: white; border-top: 1px solid #e5e7eb;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  padding: 12px 20px 16px; z-index: 999; flex-direction: column; gap: 6px;
+}
+.mobile-menu.show { display: flex; }
+.mobile-menu a {
+  display: block; padding: 10px 12px; border-radius: 8px;
+  text-decoration: none; font-size: 14px; font-weight: 500;
+  color: #374151; transition: 0.15s;
+}
+.mobile-menu a:hover  { background: #f1f5f9; color: #1e40af; }
+.mobile-menu a.active { background: #1e40af; color: white; }
+.mob-divider { height: 1px; background: #e5e7eb; margin: 6px 0; }
+.mob-user {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; font-size: 14px; font-weight: 600; color: #111827;
+}
+.mob-avatar {
+  width: 32px; height: 32px; background: #1e40af; color: white;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 13px; flex-shrink: 0;
+}
+.mob-logout {
+  display: block; padding: 10px 12px; border-radius: 8px;
+  text-decoration: none; font-size: 14px; font-weight: 500;
+  color: #dc2626; background: none; border: none;
+  font-family: 'Inter', sans-serif; cursor: pointer;
+  text-align: left; width: 100%; transition: 0.15s;
+}
+.mob-logout:hover { background: #fee2e2; }
+
+/* ── PAGE ── */
+.page-container { max-width: 1400px; margin: auto; padding: 40px; }
+
+/* PAGE HEADER */
+.page-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 28px; flex-wrap: wrap; gap: 14px;
+}
+.page-header h2 { font-weight: 700; font-size: 28px; margin: 0 0 4px; color: #0f172a; }
+.page-header p  { color: #6b7280; margin: 0; font-size: 14px; }
+.header-right   { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+/* LIVE BADGE */
+.live-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: #dcfce7; color: #15803d;
+  font-size: 12px; font-weight: 600;
+  padding: 5px 13px; border-radius: 20px;
+}
+.live-dot {
+  width: 7px; height: 7px; background: #16a34a;
+  border-radius: 50%; animation: blink 1.5s infinite;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(1.4); }
+}
+
+/* REFRESH */
+.btn-refresh {
+  background: white; color: #1e40af; border: 1.5px solid #bfdbfe;
+  padding: 7px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  font-family: 'Inter', sans-serif; cursor: pointer; transition: 0.2s;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-refresh:hover    { background: #eff6ff; }
+.btn-refresh:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn-refresh.spinning i { animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.last-updated {
+  font-size: 12px; color: #9ca3af;
+  display: flex; align-items: center; gap: 5px;
+}
+
+/* CENTER TABS */
+.center-tabs {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  margin-bottom: 20px; background: white;
+  padding: 8px; border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  overflow-x: auto;
+}
+.center-tab {
+  padding: 9px 18px; border-radius: 8px;
+  font-size: 13.5px; font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer; border: none;
+  background: transparent; color: #6b7280;
+  transition: 0.18s; flex: 1;
+  text-align: center; white-space: nowrap;
+}
+.center-tab.active {
+  background: #1e40af; color: white; font-weight: 600;
+  box-shadow: 0 2px 8px rgba(30,64,175,0.25);
+}
+.center-tab:hover:not(.active) { background: #f1f5f9; color: #1e40af; }
+
+/* NOTICE */
+.notice-box {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border: 1px solid #93c5fd; border-radius: 12px;
+  padding: 14px 18px; display: flex; align-items: center;
+  gap: 12px; margin-bottom: 20px;
+  font-size: 13.5px; color: #1e3a8a; font-weight: 500; line-height: 1.5;
+}
+.notice-box i { font-size: 18px; color: #1e40af; flex-shrink: 0; }
+
+/* STATS */
+.stats-row {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 16px; margin-bottom: 20px;
+}
+.stat-box {
+  background: white; border-radius: 13px; padding: 18px 20px;
+  border: 1px solid #e5e7eb; box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  display: flex; align-items: center; gap: 14px; transition: 0.2s;
+}
+.stat-box:hover { border-color: #bfdbfe; box-shadow: 0 4px 16px rgba(30,64,175,0.08); }
+.stat-icon {
+  width: 44px; height: 44px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.si-blue  { background: #dbeafe; color: #1e40af; }
+.si-green { background: #dcfce7; color: #15803d; }
+.si-amber { background: #fef9c3; color: #a16207; }
+.stat-label { font-size: 12px; color: #9ca3af; margin: 0 0 3px; font-weight: 500; }
+.stat-value { font-size: 22px; font-weight: 700; color: #0f172a; margin: 0; line-height: 1; }
+
+/* MAIN GRID */
+.main-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 18px; margin-bottom: 18px;
+}
+
+/* CARD */
+.q-card {
+  background: white; border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04); overflow: hidden;
+}
+.q-card.full { grid-column: 1 / -1; }
+.q-card-header {
+  padding: 16px 22px 14px; border-bottom: 1px solid #f1f5f9;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.q-card-title {
+  font-weight: 600; font-size: 14px; color: #111827;
+  display: flex; align-items: center; gap: 9px; margin: 0;
+}
+.hicon {
+  width: 30px; height: 30px; border-radius: 8px; background: #dbeafe;
+  display: flex; align-items: center; justify-content: center;
+  color: #1e40af; font-size: 13px; flex-shrink: 0;
+}
+.q-card-body { padding: 22px; }
+
+/* NOW SERVING */
+.now-serving-block { text-align: center; padding: 8px 0 18px; }
+.ns-label {
+  font-size: 11px; font-weight: 700; color: #9ca3af;
+  text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px;
+}
+.ns-number {
+  font-size: 70px; font-weight: 700; color: #1e40af;
+  line-height: 1; letter-spacing: -3px; margin-bottom: 8px;
+  text-shadow: 0 0 40px rgba(30,64,175,0.15);
+}
+.ns-service {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #f1f5f9; color: #374151;
+  font-size: 13px; font-weight: 500;
+  padding: 5px 14px; border-radius: 20px;
+}
+
+/* PROGRESS */
+.progress-section { margin-top: 20px; }
+.progress-meta {
+  display: flex; justify-content: space-between;
+  font-size: 12px; color: #9ca3af; margin-bottom: 7px; font-weight: 500;
+}
+.progress-track {
+  background: #f1f5f9; border-radius: 99px; height: 9px; overflow: hidden;
+}
+.progress-fill {
+  background: linear-gradient(90deg, #1e40af 0%, #3b82f6 100%);
+  height: 100%; border-radius: 99px; transition: width 0.9s ease;
+}
+
+/* YOUR QUEUE */
+.yq-block { text-align: center; padding: 6px 0 4px; }
+.yq-label {
+  font-size: 11px; font-weight: 700; color: #9ca3af;
+  text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px;
+}
+.yq-number {
+  font-size: 58px; font-weight: 700; color: #1e40af;
+  line-height: 1; letter-spacing: -2px; margin-bottom: 10px;
+  text-shadow: 0 0 40px rgba(30,64,175,0.15);
+}
+.yq-ahead-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #fef9c3; color: #92400e;
+  font-size: 13px; font-weight: 600;
+  padding: 5px 16px; border-radius: 20px; margin-bottom: 10px;
+}
+.yq-wait        { font-size: 13px; color: #6b7280; margin-bottom: 4px; }
+.yq-center-name { font-size: 12px; color: #9ca3af; margin-top: 12px; }
+
+.yq-empty       { text-align: center; padding: 14px 0; }
+.yq-empty-icon  {
+  width: 54px; height: 54px; background: #f3f4f6;
+  border-radius: 14px; display: flex; align-items: center;
+  justify-content: center; margin: 0 auto 12px;
+  font-size: 22px; color: #d1d5db;
+}
+.yq-empty h6 { font-size: 14px; font-weight: 600; color: #374151; margin: 0 0 5px; }
+.yq-empty p  { font-size: 12.5px; color: #9ca3af; margin: 0; line-height: 1.5; }
+
+/* QUEUE LIST */
+.queue-list { display: flex; flex-direction: column; gap: 7px; }
+.q-item {
+  display: flex; align-items: center; padding: 12px 16px;
+  border-radius: 10px; border: 1px solid #f1f5f9;
+  font-size: 13.5px; transition: 0.15s; gap: 12px; flex-wrap: wrap;
+}
+.q-item:hover         { background: #f9fafb; }
+.q-item.is-serving    { background: #eff6ff; border-color: #bfdbfe; }
+.q-item.is-mine       { background: #fefce8; border-color: #fde68a; }
+.q-item-num           { font-weight: 700; color: #111827; min-width: 64px; font-size: 14px; }
+.q-item.is-serving .q-item-num { color: #1e40af; }
+.q-item.is-mine    .q-item-num { color: #a16207; }
+.q-item-service       { flex: 1; color: #6b7280; font-size: 13.5px; min-width: 120px; }
+.q-badge              { font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 20px; white-space: nowrap; }
+.badge-serving        { background: #dcfce7; color: #15803d; }
+.badge-waiting        { background: #f3f4f6; color: #9ca3af; }
+.badge-mine           { background: #fef9c3; color: #a16207; }
+
+/* ══ RESPONSIVE ══ */
+
+@media (max-width: 900px) {
+  .nav-container  { padding: 14px 24px; }
+  .menu           { display: none; }
+  .hamburger-btn  { display: block; }
+  .page-container { padding: 24px; }
+  .main-grid      { grid-template-columns: 1fr; }
+  .stats-row      { grid-template-columns: 1fr 1fr; }
+  .q-card.full    { grid-column: unset; }
+}
+
+@media (max-width: 600px) {
+  .nav-container  { padding: 12px 16px; }
+  .page-container { padding: 14px; }
+  .page-header h2 { font-size: 22px; }
+  .stats-row      { grid-template-columns: 1fr; gap: 10px; }
+  .header-right   { gap: 8px; }
+  .last-updated   { display: none; }
+  .ns-number      { font-size: 52px; }
+  .yq-number      { font-size: 44px; }
+  .center-tab     { font-size: 12px; padding: 8px 12px; }
+  .q-card-body    { padding: 16px; }
+  .q-card-header  { padding: 14px 16px 12px; }
+}
+
+@media (max-width: 400px) {
+  .stats-row      { grid-template-columns: 1fr; }
+  .page-header h2 { font-size: 20px; }
+  .center-tab     { font-size: 11px; padding: 7px 8px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="logo-area">
+      <img src="images/logo.png" style="width:45px;height:45px;border-radius:8px;">
+      <div>
+        <strong>Pulilan Health Center</strong><br>
+        <small style="color:#6b7280;">Appointment System</small>
+      </div>
+    </div>
+
+    <!-- Desktop menu -->
+    <div class="menu">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="book.html">Book Appointment</a>
+      <a href="appointments.html">My Appointments</a>
+      <a class="active" href="#">Queue Status</a>
+      <div class="dropdown">
+        <div class="avatar" id="avatarBtn" data-bs-toggle="dropdown">A</div>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="profile.html"><i class="fa fa-user me-2"></i>Profile</a></li>
+          <li><a class="dropdown-item text-danger" href="login.html"><i class="fa fa-right-from-bracket me-2"></i>Logout</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Hamburger -->
+    <button class="hamburger-btn" onclick="toggleMobileMenu()" id="hamburgerBtn">
+      <i class="fas fa-bars" id="hamburgerIcon"></i>
+    </button>
+
+    <!-- Mobile menu -->
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="mob-user">
+        <div class="mob-avatar" id="mobAvatar">A</div>
+        <span id="mobName">Ashley Amira</span>
+      </div>
+      <div class="mob-divider"></div>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="book.html">Book Appointment</a>
+      <a href="appointments.html">My Appointments</a>
+      <a href="#" class="active">Queue Status</a>
+      <a href="profile.html">My Profile</a>
+      <div class="mob-divider"></div>
+      <button class="mob-logout" onclick="location.href='login.html'">
+        <i class="fa fa-right-from-bracket me-2"></i>Logout
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE -->
+<div class="page-container">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div>
+      <h2>Queue Status</h2>
+      <p>Real-time queue monitoring for all health centers</p>
+    </div>
+    <div class="header-right">
+      <div class="live-badge"><div class="live-dot"></div> Live Updates</div>
+      <div class="last-updated"><i class="fas fa-clock"></i> <span id="lastUpdated">—</span></div>
+      <button class="btn-refresh" id="refreshBtn" onclick="refreshQueue()">
+        <i class="fas fa-rotate-right"></i> Refresh
+      </button>
+    </div>
+  </div>
+
+  <!-- CENTER TABS -->
+  <div class="center-tabs">
+    <button class="center-tab active" onclick="selectCenter(0,this)">RHU I – Poblacion</button>
+    <button class="center-tab" onclick="selectCenter(1,this)">RHU II – Cutcot</button>
+    <button class="center-tab" onclick="selectCenter(2,this)">RHU III – Tinejero</button>
+    <button class="center-tab" onclick="selectCenter(3,this)">RHU IV – Tibag</button>
+  </div>
+
+  <!-- NOTICE -->
+  <div class="notice-box" id="noticeBox" style="display:none;">
+    <i class="fas fa-bell"></i>
+    <span id="noticeText"></span>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-icon si-blue"><i class="fas fa-users"></i></div>
+      <div>
+        <p class="stat-label">In Queue</p>
+        <p class="stat-value" id="infoTotal">—</p>
+      </div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-icon si-green"><i class="fas fa-circle-check"></i></div>
+      <div>
+        <p class="stat-label">Served Today</p>
+        <p class="stat-value" id="infoServed">—</p>
+      </div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-icon si-amber"><i class="fas fa-hourglass-half"></i></div>
+      <div>
+        <p class="stat-label">Avg. Wait</p>
+        <p class="stat-value" id="infoWait">—</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="main-grid">
+
+    <!-- NOW SERVING -->
+    <div class="q-card">
+      <div class="q-card-header">
+        <h6 class="q-card-title">
+          <div class="hicon"><i class="fas fa-volume-high"></i></div>
+          Now Serving
+        </h6>
+        <div class="live-badge" style="font-size:11px;padding:3px 10px;">
+          <div class="live-dot"></div>Live
+        </div>
+      </div>
+      <div class="q-card-body">
+        <div class="now-serving-block">
+          <div class="ns-label">Currently Being Served</div>
+          <div class="ns-number" id="nowNumber">—</div>
+          <div class="ns-service" id="nowService">
+            <i class="fas fa-stethoscope" style="color:#9ca3af;font-size:12px;"></i>
+            <span>—</span>
+          </div>
+        </div>
+        <div class="progress-section">
+          <div class="progress-meta">
+            <span>Queue Progress</span>
+            <span id="progressLabel">0 / 0</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- YOUR QUEUE -->
+    <div class="q-card">
+      <div class="q-card-header">
+        <h6 class="q-card-title">
+          <div class="hicon"><i class="fas fa-ticket"></i></div>
+          Your Queue
+        </h6>
+      </div>
+      <div class="q-card-body">
+        <div id="yourQueueWrap"></div>
+      </div>
+    </div>
+
+    <!-- QUEUE LIST -->
+    <div class="q-card full">
+      <div class="q-card-header">
+        <h6 class="q-card-title">
+          <div class="hicon"><i class="fas fa-list-ol"></i></div>
+          Queue List
+        </h6>
+        <span style="font-size:12px;color:#9ca3af;" id="queueMeta"></span>
+      </div>
+      <div class="q-card-body">
+        <div class="queue-list" id="queueList"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+
+/* USER */
+let user = { name: "Ashley Amira" };
+document.getElementById("avatarBtn").innerText = user.name.charAt(0);
+document.getElementById("mobAvatar").innerText = user.name.charAt(0);
+document.getElementById("mobName").innerText   = user.name;
+
+/* HAMBURGER */
+function toggleMobileMenu() {
+  const menu = document.getElementById("mobileMenu");
+  const icon = document.getElementById("hamburgerIcon");
+  menu.classList.toggle("show");
+  icon.className = menu.classList.contains("show") ? "fas fa-times" : "fas fa-bars";
+}
+document.addEventListener("click", function(e) {
+  const menu = document.getElementById("mobileMenu");
+  const btn  = document.getElementById("hamburgerBtn");
+  if (!menu.contains(e.target) && !btn.contains(e.target)) {
+    menu.classList.remove("show");
+    document.getElementById("hamburgerIcon").className = "fas fa-bars";
+  }
+});
+
+/* MY APPOINTMENT */
+let myAppointment = JSON.parse(localStorage.getItem("appointment"));
+if (!myAppointment) {
+  myAppointment = {
+    center: "RHU II – Cutcot",
+    service: "General Consultation",
+    date: "June 18, 2026",
+    time: "09:30 AM",
+    queue: "A-023"
+  };
+}
+
+/* CENTER DATA */
+const centers = [
+  {
+    name: "RHU I – Poblacion",
+    nowServing: "A-011", nowService: "General Consultation",
+    served: 10, total: 18, avgWait: 8,
+    queue: [
+      { num:"A-011", service:"General Consultation", status:"serving" },
+      { num:"A-012", service:"Vaccination",          status:"waiting" },
+      { num:"A-013", service:"Prenatal Care",         status:"waiting" },
+      { num:"A-014", service:"General Consultation",  status:"waiting" },
+      { num:"A-015", service:"Child Immunization",    status:"waiting" },
+      { num:"A-016", service:"Family Planning",       status:"waiting" },
+      { num:"A-017", service:"General Consultation",  status:"waiting" },
+      { num:"A-018", service:"Vaccination",           status:"waiting" },
+    ]
+  },
+  {
+    name: "RHU II – Cutcot",
+    nowServing: "A-021", nowService: "Prenatal Care",
+    served: 20, total: 28, avgWait: 12,
+    queue: [
+      { num:"A-021", service:"Prenatal Care",         status:"serving" },
+      { num:"A-022", service:"General Consultation",  status:"waiting" },
+      { num:"A-023", service:"General Consultation",  status:"waiting" },
+      { num:"A-024", service:"Vaccination",           status:"waiting" },
+      { num:"A-025", service:"Family Planning",       status:"waiting" },
+      { num:"A-026", service:"Child Immunization",    status:"waiting" },
+      { num:"A-027", service:"General Consultation",  status:"waiting" },
+      { num:"A-028", service:"Prenatal Care",         status:"waiting" },
+    ]
+  },
+  {
+    name: "RHU III – Tinejero",
+    nowServing: "A-034", nowService: "Vaccination",
+    served: 33, total: 40, avgWait: 5,
+    queue: [
+      { num:"A-034", service:"Vaccination",           status:"serving" },
+      { num:"A-035", service:"General Consultation",  status:"waiting" },
+      { num:"A-036", service:"Family Planning",       status:"waiting" },
+      { num:"A-037", service:"Child Immunization",    status:"waiting" },
+      { num:"A-038", service:"General Consultation",  status:"waiting" },
+      { num:"A-039", service:"Vaccination",           status:"waiting" },
+      { num:"A-040", service:"Prenatal Care",         status:"waiting" },
+    ]
+  },
+  {
+    name: "RHU IV – Tibag",
+    nowServing: "A-007", nowService: "Child Immunization",
+    served: 6, total: 15, avgWait: 18,
+    queue: [
+      { num:"A-007", service:"Child Immunization",    status:"serving" },
+      { num:"A-008", service:"General Consultation",  status:"waiting" },
+      { num:"A-009", service:"Vaccination",           status:"waiting" },
+      { num:"A-010", service:"Family Planning",       status:"waiting" },
+      { num:"A-011", service:"General Consultation",  status:"waiting" },
+      { num:"A-012", service:"Prenatal Care",         status:"waiting" },
+      { num:"A-013", service:"General Consultation",  status:"waiting" },
+      { num:"A-014", service:"Vaccination",           status:"waiting" },
+      { num:"A-015", service:"Child Immunization",    status:"waiting" },
+    ]
+  }
+];
+
+let selectedIdx = 0;
+
+function selectCenter(idx, el) {
+  selectedIdx = idx;
+  document.querySelectorAll(".center-tab").forEach(t => t.classList.remove("active"));
+  el.classList.add("active");
+  render();
+}
+
+function render() {
+  const c = centers[selectedIdx];
+
+  document.getElementById("infoTotal").innerText  = c.total - c.served;
+  document.getElementById("infoServed").innerText = c.served;
+  document.getElementById("infoWait").innerText   = c.avgWait + " min";
+
+  document.getElementById("nowNumber").innerText = c.nowServing;
+  document.querySelector("#nowService span").innerText = c.nowService;
+
+  const pct = Math.round((c.served / c.total) * 100);
+  document.getElementById("progressFill").style.width = pct + "%";
+  document.getElementById("progressLabel").innerText  = c.served + " / " + c.total + " served";
+
+  const noticeBox  = document.getElementById("noticeBox");
+  const noticeText = document.getElementById("noticeText");
+  const isMyCenter = myAppointment && c.name === myAppointment.center;
+
+  if (isMyCenter) {
+    const myIdx = c.queue.findIndex(q => q.num === myAppointment.queue);
+    const ahead = myIdx > 0 ? myIdx : 0;
+    noticeBox.style.display = "flex";
+    noticeText.innerHTML = `Your appointment is here. Queue number <strong>${myAppointment.queue}</strong> — <strong>${ahead}</strong> ${ahead === 1 ? "person" : "people"} ahead of you.`;
+  } else {
+    noticeBox.style.display = "none";
+  }
+
+  const wrap = document.getElementById("yourQueueWrap");
+  if (isMyCenter) {
+    const myIdx   = c.queue.findIndex(q => q.num === myAppointment.queue);
+    const ahead   = myIdx > 0 ? myIdx : 0;
+    const estMins = ahead * c.avgWait;
+    wrap.innerHTML = `
+      <div class="yq-block">
+        <div class="yq-label">Your Queue Number</div>
+        <div class="yq-number">${myAppointment.queue}</div>
+        <div class="yq-ahead-pill"><i class="fas fa-people-line"></i> ${ahead} ahead of you</div>
+        <div class="yq-wait">Estimated wait: <strong>~${estMins} mins</strong></div>
+        <div class="yq-center-name"><i class="fas fa-location-dot" style="margin-right:4px;"></i>${myAppointment.center}</div>
+      </div>`;
+  } else {
+    wrap.innerHTML = `
+      <div class="yq-empty">
+        <div class="yq-empty-icon"><i class="fas fa-ticket"></i></div>
+        <h6>No Queue Here</h6>
+        <p>Your appointment is at<br><strong style="color:#374151;">${myAppointment ? myAppointment.center : "—"}</strong></p>
+      </div>`;
+  }
+
+  document.getElementById("queueMeta").innerText = `${c.queue.length} in queue`;
+  let html = "";
+  c.queue.forEach(item => {
+    const serving = item.status === "serving";
+    const mine    = myAppointment && item.num === myAppointment.queue && isMyCenter;
+    const cls     = serving ? "q-item is-serving" : mine ? "q-item is-mine" : "q-item";
+    const badge   = serving
+      ? '<span class="q-badge badge-serving"><i class="fas fa-volume-high me-1"></i>Now Serving</span>'
+      : mine
+        ? '<span class="q-badge badge-mine"><i class="fas fa-star me-1"></i>Your Turn</span>'
+        : '<span class="q-badge badge-waiting">Waiting</span>';
+    html += `
+      <div class="${cls}">
+        <span class="q-item-num">${item.num}</span>
+        <span class="q-item-service">${item.service}</span>
+        ${badge}
+      </div>`;
+  });
+  document.getElementById("queueList").innerHTML = html;
+}
+
+/* REFRESH */
+function refreshQueue() {
+  const btn = document.getElementById("refreshBtn");
+  btn.classList.add("spinning");
+  btn.disabled = true;
+  setTimeout(() => {
+    const c = centers[selectedIdx];
+    if (c.served < c.total - 1 && c.queue.length > 1) {
+      c.served++;
+      c.queue.shift();
+      c.queue[0].status = "serving";
+      c.nowServing = c.queue[0].num;
+      c.nowService = c.queue[0].service;
+    }
+    render();
+    btn.classList.remove("spinning");
+    btn.disabled = false;
+    updateTime();
+  }, 800);
+}
+
+function updateTime() {
+  const now = new Date();
+  const pad = n => n.toString().padStart(2, "0");
+  document.getElementById("lastUpdated").innerText =
+    pad(now.getHours()) + ":" + pad(now.getMinutes()) + ":" + pad(now.getSeconds());
+}
+
+/* AUTO-SELECT USER'S CENTER */
+if (myAppointment) {
+  const idx = centers.findIndex(c => c.name === myAppointment.center);
+  if (idx >= 0) {
+    const tabs = document.querySelectorAll(".center-tab");
+    tabs.forEach(t => t.classList.remove("active"));
+    tabs[idx].classList.add("active");
+    selectedIdx = idx;
+  }
+}
+
+render();
+updateTime();
+setInterval(refreshQueue, 30000);
+
+</script>
+</body>
+</html>

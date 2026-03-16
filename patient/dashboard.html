@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dashboard | Pulilan Health Center</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #f6f8fb;
+}
+
+/* ── NAVBAR ── */
+.navbar {
+  position: sticky; top: 0; z-index: 1000;
+  background: white; border-bottom: 3px solid #1e40af;
+}
+.nav-container {
+  width: 100%; padding: 14px 60px;
+  display: flex; align-items: center;
+  position: relative;
+}
+.logo-area { display: flex; align-items: center; gap: 12px; }
+.menu {
+  display: flex; gap: 15px; align-items: center; margin-left: auto;
+}
+.menu a {
+  text-decoration: none; color: #374151;
+  font-weight: 500; padding: 8px 16px;
+  border-radius: 8px; transition: 0.2s;
+}
+.menu a.active { background: #1e40af; color: white; }
+.menu a:hover  { background: #eef2ff; }
+
+.avatar {
+  width: 34px; height: 34px; background: #1e40af; color: white;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-weight: 600; cursor: pointer;
+}
+
+/* Hamburger */
+.hamburger-btn {
+  display: none; background: none; border: none;
+  font-size: 22px; color: #374151; cursor: pointer;
+  margin-left: auto; padding: 4px;
+}
+.mobile-menu {
+  display: none; position: absolute; top: 100%; left: 0; right: 0;
+  background: white; border-top: 1px solid #e5e7eb;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  padding: 12px 20px 16px; z-index: 999;
+  flex-direction: column; gap: 6px;
+}
+.mobile-menu.show { display: flex; }
+.mobile-menu a {
+  display: block; padding: 10px 12px; border-radius: 8px;
+  text-decoration: none; font-size: 14px; font-weight: 500;
+  color: #374151; transition: 0.15s;
+}
+.mobile-menu a:hover { background: #f1f5f9; color: #1e40af; }
+.mobile-menu a.active { background: #1e40af; color: white; }
+.mob-divider { height: 1px; background: #e5e7eb; margin: 6px 0; }
+.mob-user {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; font-size: 14px; font-weight: 600; color: #111827;
+}
+.mob-avatar {
+  width: 32px; height: 32px; background: #1e40af; color: white;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 13px; flex-shrink: 0;
+}
+.mob-logout {
+  display: block; padding: 10px 12px; border-radius: 8px;
+  text-decoration: none; font-size: 14px; font-weight: 500;
+  color: #dc2626; transition: 0.15s; background: none; border: none;
+  font-family: 'Inter', sans-serif; cursor: pointer; text-align: left; width: 100%;
+}
+.mob-logout:hover { background: #fee2e2; }
+
+/* ── DASHBOARD ── */
+.dashboard {
+  max-width: 1400px; margin: auto; padding: 40px;
+}
+
+.welcome { margin-bottom: 28px; }
+.welcome h2 {
+  font-weight: 800; font-size: 28px;
+  color: #111827; letter-spacing: -0.5px;
+}
+.welcome p { color: #6b7280; font-size: 14px; margin-top: 4px; }
+
+/* ACTION CARDS */
+.actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px; margin-bottom: 30px;
+}
+.action-card {
+  background: white; border-radius: 14px; padding: 20px;
+  display: flex; gap: 15px; align-items: center;
+  border: 1px solid #e5e7eb; cursor: pointer; transition: .2s;
+  text-decoration: none; color: #111827;
+}
+.action-card:hover {
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  transform: translateY(-2px); color: #111827;
+}
+.icon-box {
+  width: 42px; height: 42px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; background: #eef2ff; color: #1e40af; flex-shrink: 0;
+}
+.action-card strong { font-size: 14px; font-weight: 600; }
+.action-card small  { color: #6b7280; font-size: 12px; }
+
+/* CARD BOX */
+.card-box {
+  background: white; padding: 25px; border-radius: 14px;
+  border: 1px solid #e5e7eb; margin-bottom: 25px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+}
+.card-title {
+  font-weight: 600; font-size: 15px; color: #111827;
+  margin-bottom: 15px; display: flex; align-items: center;
+  justify-content: space-between;
+}
+.card-title a {
+  font-size: 12.5px; font-weight: 500;
+  color: #1e40af; text-decoration: none;
+}
+.card-title a:hover { text-decoration: underline; }
+
+/* QUEUE STATS */
+.queue-stats-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px; margin-bottom: 20px;
+}
+.queue-stat-box {
+  background: #f6f8fb; border-radius: 12px;
+  padding: 14px 16px; border: 1px solid #e5e7eb;
+}
+.qs-label {
+  font-size: 11px; color: #6b7280; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px;
+}
+.qs-val { font-size: 24px; font-weight: 700; color: #1e40af; line-height: 1; }
+.qs-val.sm { font-size: 18px; color: #111827; }
+
+#queueStatusText { margin-top: 4px; color: #374151; font-size: 14px; font-weight: 500; }
+#queueIndicator {
+  margin-top: 8px; font-size: 13px; font-weight: 600;
+  display: inline-block; padding: 4px 12px;
+  border-radius: 20px; background: #dcfce7; color: #16a34a; transition: .3s;
+}
+.reminder-text {
+  margin-top: 10px; color: #6b7280; font-size: 13px;
+  display: flex; align-items: center; gap: 6px;
+}
+.reminder-text i { color: #d97706; font-size: 13px; }
+.progress-label {
+  display: flex; justify-content: space-between;
+  font-size: 12.5px; color: #6b7280;
+  margin-top: 16px; margin-bottom: 6px;
+}
+.progress-bar {
+  height: 8px; background: #e5e7eb;
+  border-radius: 8px; overflow: hidden;
+}
+.progress-fill {
+  height: 8px; width: 0%; background: #1e40af;
+  border-radius: 8px; transition: width 0.6s ease;
+}
+
+/* APPOINTMENT */
+.appt-row {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 14px 0; border-bottom: 1px solid #e5e7eb;
+}
+.appt-row:first-child  { padding-top: 0; }
+.appt-row:last-of-type { border-bottom: none; }
+.appt-date-box {
+  width: 50px; height: 54px; background: #eff6ff;
+  border: 1.5px solid #bfdbfe; border-radius: 10px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; flex-shrink: 0;
+}
+.appt-date-box .day   { font-size: 20px; font-weight: 700; color: #1e40af; line-height: 1; }
+.appt-date-box .month { font-size: 10px; font-weight: 600; color: #1e40af; text-transform: uppercase; }
+.appt-info { flex: 1; min-width: 0; }
+.appt-service { font-size: 14px; font-weight: 600; color: #111827; }
+.appt-meta {
+  font-size: 12.5px; color: #6b7280; margin-top: 5px;
+  display: flex; flex-wrap: wrap; gap: 12px;
+}
+.appt-meta span { display: flex; align-items: center; gap: 5px; }
+.appt-queue-num { text-align: right; flex-shrink: 0; }
+.appt-queue-num .qnum { font-size: 22px; font-weight: 700; color: #1e40af; }
+.appt-queue-num small  { display: block; font-size: 11px; color: #6b7280; font-weight: 500; }
+.appt-actions { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+
+/* BUTTONS */
+.btn-main {
+  background: #1e40af; color: white; border: none;
+  padding: 8px 16px; border-radius: 8px;
+  font-family: 'Inter', sans-serif; font-weight: 500; font-size: 13px;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: .2s;
+}
+.btn-main:hover { background: #1d3a9e; }
+.btn-outline {
+  border: 1px solid #d1d5db; background: white; color: #374151;
+  padding: 8px 16px; border-radius: 8px;
+  font-family: 'Inter', sans-serif; font-weight: 500; font-size: 13px;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: .2s;
+}
+.btn-outline:hover { border-color: #1e40af; color: #1e40af; }
+.notif-empty {
+  color: #6b7280; font-size: 13.5px;
+  display: flex; align-items: center; gap: 8px;
+}
+.notif-empty i { color: #d1d5db; font-size: 16px; }
+
+/* ══ RESPONSIVE ══ */
+
+@media (max-width: 900px) {
+  .nav-container { padding: 14px 24px; }
+  .menu { display: none; }
+  .hamburger-btn { display: block; }
+  .dashboard { padding: 24px; }
+  .queue-stats-row { grid-template-columns: repeat(3, 1fr); }
+  .actions { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .nav-container { padding: 12px 16px; }
+  .dashboard { padding: 16px; }
+  .welcome h2 { font-size: 22px; }
+  .queue-stats-row { grid-template-columns: repeat(2, 1fr); }
+  .actions { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .action-card { padding: 14px; gap: 10px; }
+  .icon-box { width: 36px; height: 36px; font-size: 15px; }
+  .action-card strong { font-size: 13px; }
+  .card-box { padding: 18px; }
+  .qs-val { font-size: 20px; }
+  .qs-val.sm { font-size: 16px; }
+  .appt-row { flex-wrap: wrap; }
+  .appt-queue-num { width: 100%; text-align: left; }
+  .appt-actions { flex-direction: column; }
+  .btn-main, .btn-outline { width: 100%; justify-content: center; }
+}
+
+@media (max-width: 400px) {
+  .queue-stats-row { grid-template-columns: 1fr 1fr; }
+  .actions { grid-template-columns: 1fr; }
+  .welcome h2 { font-size: 20px; }
+}
+</style>
+
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-container">
+
+    <div class="logo-area">
+      <img src="images/logo.png" style="width:45px;height:45px;border-radius:8px;">
+      <div>
+        <strong>Pulilan Health Center</strong><br>
+        <small style="color:#6b7280;">Appointment System</small>
+      </div>
+    </div>
+
+    <!-- Desktop menu -->
+    <div class="menu">
+      <a class="active" href="dashboard.html">Dashboard</a>
+      <a href="book.html">Book Appointment</a>
+      <a href="appointments.html">My Appointments</a>
+      <a href="queue.html">Queue Status</a>
+      <div class="dropdown">
+        <div class="avatar" id="avatarBtn" data-bs-toggle="dropdown">A</div>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="profile.html"><i class="fa fa-user me-2"></i>Profile</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item text-danger" href="login.html"><i class="fa fa-right-from-bracket me-2"></i>Logout</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Hamburger -->
+    <button class="hamburger-btn" onclick="toggleMobileMenu()" id="hamburgerBtn">
+      <i class="fas fa-bars" id="hamburgerIcon"></i>
+    </button>
+
+    <!-- Mobile menu -->
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="mob-user">
+        <div class="mob-avatar" id="mobAvatar">A</div>
+        <span id="mobName">Ashley Amira</span>
+      </div>
+      <div class="mob-divider"></div>
+      <a class="active" href="dashboard.html">Dashboard</a>
+      <a href="book.html">Book Appointment</a>
+      <a href="appointments.html">My Appointments</a>
+      <a href="queue.html">Queue Status</a>
+      <a href="profile.html">My Profile</a>
+      <div class="mob-divider"></div>
+      <button class="mob-logout" onclick="location.href='login.html'">
+        <i class="fa fa-right-from-bracket me-2"></i>Logout
+      </button>
+    </div>
+
+  </div>
+</nav>
+
+
+<!-- DASHBOARD -->
+<div class="dashboard">
+
+  <div class="welcome">
+    <h2 id="welcomeName">Welcome!</h2>
+    <p>Pulilan Health Center Appointment System</p>
+  </div>
+
+  <!-- NOTIFICATIONS -->
+  <div class="card-box">
+    <div class="card-title">
+      Notifications
+      <a href="#">View all</a>
+    </div>
+    <div id="notificationArea" class="notif-empty">
+      <i class="fa-regular fa-bell-slash"></i>
+      No new notifications
+    </div>
+  </div>
+
+  <!-- QUICK ACTIONS -->
+  <div class="actions">
+    <a href="book.html" class="action-card">
+      <div class="icon-box"><i class="fa-solid fa-calendar-check"></i></div>
+      <div>
+        <strong>Book Appointment</strong><br>
+        <small>Schedule your visit</small>
+      </div>
+    </a>
+    <a href="appointments.html" class="action-card">
+      <div class="icon-box"><i class="fa-solid fa-file-medical"></i></div>
+      <div>
+        <strong>My Appointments</strong><br>
+        <small>View booking history</small>
+      </div>
+    </a>
+    <a href="queue.html" class="action-card">
+      <div class="icon-box"><i class="fa-solid fa-clock"></i></div>
+      <div>
+        <strong>Queue Status</strong><br>
+        <small>Check your turn</small>
+      </div>
+    </a>
+    <a href="profile.html" class="action-card">
+      <div class="icon-box"><i class="fa-solid fa-user"></i></div>
+      <div>
+        <strong>My Profile</strong><br>
+        <small>Update personal info</small>
+      </div>
+    </a>
+  </div>
+
+  <!-- QUEUE STATUS -->
+  <div class="card-box">
+    <div class="card-title">
+      Queue Status
+      <a href="queue.html">View full details</a>
+    </div>
+    <div class="queue-stats-row">
+      <div class="queue-stat-box">
+        <div class="qs-label">Your Queue</div>
+        <div class="qs-val" id="yourQueue">--</div>
+      </div>
+      <div class="queue-stat-box">
+        <div class="qs-label">Now Serving</div>
+        <div class="qs-val" id="nowServing">--</div>
+      </div>
+      <div class="queue-stat-box">
+        <div class="qs-label">Next</div>
+        <div class="qs-val sm" id="nextServing">--</div>
+      </div>
+      <div class="queue-stat-box">
+        <div class="qs-label">People Ahead</div>
+        <div class="qs-val sm" id="peopleAhead">--</div>
+      </div>
+      <div class="queue-stat-box">
+        <div class="qs-label">Estimated Wait</div>
+        <div class="qs-val sm" id="waitTime">--</div>
+      </div>
+    </div>
+
+    <div id="queueStatusText">Status: Waiting for your turn</div>
+    <div id="queueIndicator">🟢 Low Queue</div>
+
+    <div class="reminder-text">
+      <i class="fa-solid fa-circle-info"></i>
+      Reminder: Please arrive 10 minutes before your schedule.
+    </div>
+
+    <div class="progress-label">
+      <span>Queue Progress</span>
+      <span id="progressPct">0%</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="queueProgress"></div>
+    </div>
+  </div>
+
+  <!-- UPCOMING APPOINTMENT -->
+  <div id="appointmentContainer"></div>
+
+</div>
+
+
+<script>
+
+/* USER */
+let user = { name: "Ashley Amira" }
+
+document.getElementById("welcomeName").innerText = "Welcome, " + user.name + "!"
+document.getElementById("avatarBtn").innerText   = user.name.charAt(0)
+document.getElementById("mobAvatar").innerText   = user.name.charAt(0)
+document.getElementById("mobName").innerText     = user.name
+
+/* HAMBURGER */
+function toggleMobileMenu() {
+  const menu = document.getElementById("mobileMenu")
+  const icon = document.getElementById("hamburgerIcon")
+  menu.classList.toggle("show")
+  icon.className = menu.classList.contains("show") ? "fas fa-times" : "fas fa-bars"
+}
+document.addEventListener("click", function(e) {
+  const menu = document.getElementById("mobileMenu")
+  const btn  = document.getElementById("hamburgerBtn")
+  if (!menu.contains(e.target) && !btn.contains(e.target)) {
+    menu.classList.remove("show")
+    document.getElementById("hamburgerIcon").className = "fas fa-bars"
+  }
+})
+
+/* APPOINTMENT DATA */
+let appointment = {
+  center:  "RHU I – Poblacion",
+  service: "General Consultation",
+  date:    "March 19, 2026",
+  day:     "19",
+  month:   "Mar",
+  time:    "09:00 AM",
+  queue:   "A-002"
+}
+
+document.getElementById("yourQueue").innerText = appointment.queue
+
+let queueNumber = parseInt(appointment.queue.split("-")[1])
+let nowServing  = 1
+
+function updateQueue() {
+  let next        = nowServing + 1
+  let peopleAhead = Math.max(queueNumber - nowServing, 0)
+  let wait        = peopleAhead * 5
+  let progress    = Math.min((nowServing / queueNumber) * 100, 100)
+
+  document.getElementById("nowServing").innerText  = "A-" + String(nowServing).padStart(3, "0")
+  document.getElementById("nextServing").innerText = "A-" + String(next).padStart(3, "0")
+  document.getElementById("peopleAhead").innerText = peopleAhead
+  document.getElementById("waitTime").innerText    = "~" + wait + " minutes"
+
+  let statusEl    = document.getElementById("queueStatusText")
+  let indicatorEl = document.getElementById("queueIndicator")
+  let progressEl  = document.getElementById("queueProgress")
+  let pctEl       = document.getElementById("progressPct")
+
+  statusEl.innerText = peopleAhead === 0
+    ? "Status: Now Serving — It's your turn!"
+    : "Status: Waiting for your turn (" + peopleAhead + " ahead)"
+
+  if (peopleAhead <= 3) {
+    indicatorEl.innerHTML        = "🟢 Low Queue"
+    indicatorEl.style.background = "#dcfce7"
+    indicatorEl.style.color      = "#16a34a"
+  } else if (peopleAhead <= 7) {
+    indicatorEl.innerHTML        = "🟡 Moderate Queue"
+    indicatorEl.style.background = "#fef3c7"
+    indicatorEl.style.color      = "#d97706"
+  } else {
+    indicatorEl.innerHTML        = "🔴 High Queue"
+    indicatorEl.style.background = "#fee2e2"
+    indicatorEl.style.color      = "#dc2626"
+  }
+
+  progressEl.style.width = progress + "%"
+  pctEl.innerText        = Math.round(progress) + "%"
+}
+
+updateQueue()
+
+setInterval(function() {
+  if (nowServing < queueNumber) { nowServing++; updateQueue() }
+}, 2000)
+
+/* UPCOMING APPOINTMENT */
+document.getElementById("appointmentContainer").innerHTML = `
+<div class="card-box">
+  <div class="card-title">
+    Upcoming Appointment
+    <a href="appointments.html">View all</a>
+  </div>
+  <div class="appt-row">
+    <div class="appt-date-box">
+      <span class="day">${appointment.day}</span>
+      <span class="month">${appointment.month}</span>
+    </div>
+    <div class="appt-info">
+      <div class="appt-service">${appointment.service}</div>
+      <div class="appt-meta">
+        <span><i class="fa-solid fa-hospital fa-xs"></i> ${appointment.center}</span>
+        <span><i class="fa-solid fa-clock fa-xs"></i> ${appointment.time}</span>
+        <span><i class="fa-solid fa-calendar fa-xs"></i> ${appointment.date}</span>
+      </div>
+    </div>
+    <div class="appt-queue-num">
+      <div class="qnum">${appointment.queue}</div>
+      <small>Your Queue</small>
+    </div>
+  </div>
+  <div class="appt-actions">
+    <button class="btn-outline" onclick="location.href='queue.html'">
+      <i class="fa-solid fa-list-ol"></i> View Queue
+    </button>
+    <button class="btn-main" onclick="location.href='qr.html'">
+      <i class="fa-solid fa-qrcode"></i> View QR
+    </button>
+  </div>
+</div>
+`
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
