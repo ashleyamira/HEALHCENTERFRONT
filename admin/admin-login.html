@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login | Pulilan Health Center</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #f6f8fb;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── NAVBAR ── */
+.navbar {
+  background: white;
+  border-bottom: 3px solid #1e40af;
+}
+.nav-container {
+  width: 100%; padding: 14px 60px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.logo-area { display: flex; align-items: center; gap: 12px; }
+.logo-area strong { font-size: 15px; color: #111827; }
+.logo-area small  { color: #6b7280; font-size: 12px; display: block; }
+.nav-patient-link {
+  font-size: 13px; color: #6b7280; font-weight: 500;
+  text-decoration: none;
+  display: flex; align-items: center; gap: 5px; transition: 0.2s;
+}
+.nav-patient-link:hover { color: #1e40af; }
+
+/* ── PAGE CENTER ── */
+.page-center {
+  flex: 1; display: flex;
+  align-items: center; justify-content: center;
+  padding: 40px 20px;
+}
+
+/* ── LOGIN CARD ── */
+.login-card {
+  background: white; border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  width: 100%; max-width: 420px;
+  padding: 40px;
+}
+
+.brand-row {
+  display: flex; align-items: center; gap: 13px;
+  margin-bottom: 20px; padding-bottom: 20px;
+  border-bottom: 1px solid #f3f4f6;
+}
+.brand-row img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+.brand-name { font-size: 14px; font-weight: 700; color: #111827; margin: 0 0 2px; }
+.brand-sub  { font-size: 12px; color: #9ca3af; margin: 0; }
+
+.admin-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: #dbeafe; color: #1e40af;
+  font-size: 11px; font-weight: 700;
+  padding: 3px 10px; border-radius: 6px;
+  letter-spacing: 0.05em; margin-bottom: 14px;
+}
+
+.login-title { font-size: 22px; font-weight: 700; color: #111827; margin: 0 0 4px; }
+.login-sub   { font-size: 13.5px; color: #9ca3af; margin-bottom: 24px; }
+
+.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.form-group label { font-size: 13.5px; font-weight: 600; color: #374151; }
+
+.input-wrap { position: relative; }
+.input-icon {
+  position: absolute; left: 12px; top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af; font-size: 13px; pointer-events: none;
+}
+.input-wrap input {
+  width: 100%; padding: 11px 14px 11px 38px;
+  border: 1.5px solid #e5e7eb; border-radius: 8px;
+  font-size: 14.5px; font-family: 'Inter', sans-serif;
+  color: #111827; background: #fafafa; outline: none; transition: 0.18s;
+}
+.input-wrap input:focus {
+  border-color: #1e40af; background: white;
+  box-shadow: 0 0 0 3px rgba(30,64,175,0.09);
+}
+.input-wrap input.is-error {
+  border-color: #dc2626; background: white;
+  box-shadow: 0 0 0 3px rgba(220,38,38,0.08);
+}
+.toggle-pw {
+  position: absolute; right: 12px; top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af; cursor: pointer; font-size: 13px;
+}
+.toggle-pw:hover { color: #1e40af; }
+
+.field-error {
+  font-size: 12px; color: #dc2626; font-weight: 500;
+  display: none; align-items: center; gap: 5px; margin-top: 2px;
+}
+.field-error.show { display: flex; }
+
+.remember-wrap {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 13.5px; color: #374151; cursor: pointer; margin-bottom: 20px;
+}
+.remember-wrap input { width: 15px; height: 15px; accent-color: #1e40af; cursor: pointer; }
+
+.error-box {
+  background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px;
+  padding: 10px 13px; font-size: 13px; color: #dc2626; font-weight: 500;
+  display: flex; align-items: center; gap: 7px; margin-bottom: 14px;
+}
+
+.btn-login {
+  width: 100%; background: #1e40af; color: white; border: none;
+  padding: 12px; border-radius: 8px; font-size: 15px; font-weight: 700;
+  font-family: 'Inter', sans-serif; cursor: pointer; transition: 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-login:hover    { background: #1d4ed8; }
+.btn-login:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.spinner {
+  width: 16px; height: 16px;
+  border: 2.5px solid rgba(255,255,255,0.35);
+  border-top-color: white; border-radius: 50%;
+  animation: spin 0.7s linear infinite; display: none;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.role-hint {
+  margin-top: 20px; padding: 12px 14px;
+  background: #f8fafc; border: 1px solid #e5e7eb;
+  border-radius: 8px; font-size: 12.5px; color: #6b7280; line-height: 1.6;
+}
+.role-hint strong { color: #374151; }
+
+/* ══ RESPONSIVE ══ */
+
+@media (max-width: 600px) {
+  .nav-container { padding: 12px 20px; }
+  .logo-area strong { font-size: 13.5px; }
+  .logo-area small  { font-size: 11px; }
+  .nav-patient-link span { display: none; }
+}
+
+@media (max-width: 480px) {
+  .nav-container { padding: 12px 16px; }
+  .page-center   { padding: 24px 16px; align-items: flex-start; padding-top: 32px; }
+  .login-card    { padding: 24px 20px; border-radius: 12px; }
+  .login-title   { font-size: 20px; }
+  .brand-row img { width: 42px; height: 42px; }
+  .brand-name    { font-size: 13.5px; }
+  .input-wrap input { font-size: 14px; padding: 10px 14px 10px 36px; }
+  .btn-login     { padding: 11px; font-size: 14px; }
+  .role-hint     { font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="logo-area">
+      <img src="images/logo.png"
+        style="width:45px;height:45px;border-radius:50%;object-fit:cover;">
+      <div>
+        <strong>Pulilan Health Center</strong>
+        <small>Appointment System</small>
+      </div>
+    </div>
+    <a href="login.html" class="nav-patient-link">
+      <i class="fas fa-arrow-left" style="font-size:11px;"></i>
+      <span>Patient Portal</span>
+    </a>
+  </div>
+</nav>
+
+<div class="page-center">
+  <div class="login-card">
+
+    <div class="brand-row">
+      <img src="images/logo.png">
+      <div>
+        <p class="brand-name">Pulilan Health Center</p>
+        <p class="brand-sub">Municipal Health Center, Bulacan</p>
+      </div>
+    </div>
+
+    <div class="admin-tag">
+      <i class="fas fa-shield-halved"></i> ADMIN PANEL
+    </div>
+
+    <p class="login-title">Sign In</p>
+    <p class="login-sub">Enter your credentials to continue</p>
+
+    <!-- GLOBAL ERROR -->
+    <div class="error-box" id="errorBox" style="display:none;">
+      <i class="fas fa-circle-xmark"></i>
+      <span id="errorText">Invalid email or password.</span>
+    </div>
+
+    <!-- EMAIL -->
+    <div class="form-group">
+      <label>Email</label>
+      <div class="input-wrap">
+        <i class="fas fa-envelope input-icon"></i>
+        <input
+          type="email" id="email"
+          placeholder="Enter your email"
+          autocomplete="off"
+          oninput="clearFieldError('email','emailError')">
+      </div>
+      <div class="field-error" id="emailError">
+        <i class="fas fa-circle-exclamation"></i>
+        <span id="emailErrorText">Please enter a valid email address.</span>
+      </div>
+    </div>
+
+    <!-- PASSWORD -->
+    <div class="form-group">
+      <label>Password</label>
+      <div class="input-wrap">
+        <i class="fas fa-lock input-icon"></i>
+        <input
+          type="password" id="password"
+          placeholder="Enter your password"
+          oninput="clearFieldError('password','passwordError')">
+        <i class="fas fa-eye toggle-pw" id="togglePw" onclick="togglePassword()"></i>
+      </div>
+      <div class="field-error" id="passwordError">
+        <i class="fas fa-circle-exclamation"></i>
+        <span id="passwordErrorText">Password is required.</span>
+      </div>
+    </div>
+
+    <!-- REMEMBER -->
+    <label class="remember-wrap">
+      <input type="checkbox" id="rememberMe"> Remember Me
+    </label>
+
+    <!-- BUTTON -->
+    <button class="btn-login" id="loginBtn" onclick="doLogin()">
+      <div class="spinner" id="spinner"></div>
+      <span id="btnText">
+        <i class="fas fa-right-to-bracket"></i>&nbsp; Sign In
+      </span>
+    </button>
+
+    <!-- ROLE HINT -->
+    <div class="role-hint">
+      <strong>Super Admin</strong> — access to all RHU branches<br>
+      <strong>RHU Staff</strong> — access to assigned branch only
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+
+const ADMINS = [
+  { email:"admin@pulilan.gov.ph", password:"admin123", name:"System Administrator", role:"Super Admin", branch:"All Branches"       },
+  { email:"rhu1@pulilan.gov.ph",  password:"rhu1pass", name:"RHU I Staff",          role:"RHU Staff",   branch:"RHU I – Poblacion"  },
+  { email:"rhu2@pulilan.gov.ph",  password:"rhu2pass", name:"RHU II Staff",         role:"RHU Staff",   branch:"RHU II – Cutcot"    },
+  { email:"rhu3@pulilan.gov.ph",  password:"rhu3pass", name:"RHU III Staff",        role:"RHU Staff",   branch:"RHU III – Tinejero" },
+  { email:"rhu4@pulilan.gov.ph",  password:"rhu4pass", name:"RHU IV Staff",         role:"RHU Staff",   branch:"RHU IV – Tibag"     },
+];
+
+window.onload = function() {
+  const saved = localStorage.getItem("adminRemember");
+  if (saved) {
+    document.getElementById("email").value = saved;
+    document.getElementById("rememberMe").checked = true;
+  }
+};
+
+function togglePassword() {
+  const input = document.getElementById("password");
+  const icon  = document.getElementById("togglePw");
+  if (input.type === "password") {
+    input.type = "text";
+    icon.classList.replace("fa-eye","fa-eye-slash");
+  } else {
+    input.type = "password";
+    icon.classList.replace("fa-eye-slash","fa-eye");
+  }
+}
+
+function clearFieldError(inputId, errorId) {
+  document.getElementById(inputId).classList.remove("is-error");
+  document.getElementById(errorId).classList.remove("show");
+  document.getElementById("errorBox").style.display = "none";
+}
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function showFieldError(inputId, errorId, msg) {
+  document.getElementById(inputId).classList.add("is-error");
+  const errEl = document.getElementById(errorId);
+  errEl.querySelector("span").innerText = msg;
+  errEl.classList.add("show");
+}
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter") doLogin();
+});
+
+function doLogin() {
+  const email    = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const remember = document.getElementById("rememberMe").checked;
+  const btn      = document.getElementById("loginBtn");
+  const spinner  = document.getElementById("spinner");
+  const btnText  = document.getElementById("btnText");
+  const errorBox = document.getElementById("errorBox");
+
+  errorBox.style.display = "none";
+  document.getElementById("email").classList.remove("is-error");
+  document.getElementById("password").classList.remove("is-error");
+  document.getElementById("emailError").classList.remove("show");
+  document.getElementById("passwordError").classList.remove("show");
+
+  let hasError = false;
+
+  if (!email) {
+    showFieldError("email","emailError","Email is required.");
+    hasError = true;
+  } else if (!isValidEmail(email)) {
+    showFieldError("email","emailError","Please enter a valid email address (must include @).");
+    hasError = true;
+  }
+
+  if (!password) {
+    showFieldError("password","passwordError","Password is required.");
+    hasError = true;
+  } else if (password.length < 6) {
+    showFieldError("password","passwordError","Password must be at least 6 characters.");
+    hasError = true;
+  }
+
+  if (hasError) return;
+
+  btn.disabled          = true;
+  spinner.style.display = "block";
+  btnText.style.display = "none";
+
+  setTimeout(() => {
+    const found = ADMINS.find(a => a.email === email && a.password === password);
+
+    if (found) {
+      if (remember) {
+        localStorage.setItem("adminRemember", email);
+      } else {
+        localStorage.removeItem("adminRemember");
+      }
+      localStorage.setItem("adminSession", JSON.stringify({
+        email:     found.email,
+        name:      found.name,
+        role:      found.role,
+        branch:    found.branch,
+        loggedIn:  true,
+        loginTime: new Date().toISOString()
+      }));
+      window.location.href = "admin-dashboard.html";
+    } else {
+      btn.disabled          = false;
+      spinner.style.display = "none";
+      btnText.style.display = "flex";
+      errorBox.style.display = "flex";
+      document.getElementById("errorText").innerText = "Invalid email or password. Please try again.";
+      document.getElementById("email").classList.add("is-error");
+      document.getElementById("password").classList.add("is-error");
+    }
+  }, 800);
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patients | Pulilan Health Center Admin</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+* { box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: #f6f8fb; margin: 0; }
+html, body { height: 100%; overflow: hidden; }
+
+/* ── NAVBAR ── */
+.navbar {
+  position: sticky; top: 0; z-index: 1000;
+  background: white; border-bottom: 3px solid #1e40af;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.nav-container {
+  width: 100%; padding: 14px 32px;
+  display: flex; align-items: center; position: relative;
+}
+.logo-area { display: flex; align-items: center; gap: 12px; }
+.logo-area img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+.logo-area strong { font-size: 15px; color: #111827; }
+.logo-area small  { color: #6b7280; font-size: 12px; display: block; }
+.nav-right { display: flex; align-items: center; gap: 16px; margin-left: auto; }
+.admin-info { text-align: right; }
+.admin-info .a-name { font-size: 13.5px; font-weight: 600; color: #111827; display: block; }
+.admin-info .a-role { font-size: 12px; color: #6b7280; display: block; }
+.admin-avatar {
+  width: 36px; height: 36px; background: #1e40af; color: white;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 14px; flex-shrink: 0;
+}
+.btn-logout {
+  background: white; color: #dc2626; border: 1.5px solid #fecaca;
+  padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  font-family: 'Inter', sans-serif; cursor: pointer; transition: 0.2s;
+  display: flex; align-items: center; gap: 6px;
+}
+.btn-logout:hover { background: #fef2f2; }
+
+/* Hamburger */
+.hamburger-btn {
+  display: none; background: none; border: none;
+  font-size: 22px; color: #374151; cursor: pointer; padding: 4px; margin-left: 10px;
+}
+.mobile-sidebar {
+  display: none; position: absolute; top: 100%; left: 0; right: 0;
+  background: white; border-top: 1px solid #e5e7eb;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  padding: 10px 12px 16px; z-index: 999; flex-direction: column; gap: 4px;
+}
+.mobile-sidebar.show { display: flex; }
+.mob-section-label {
+  font-size: 10.5px; font-weight: 700; color: #9ca3af;
+  text-transform: uppercase; letter-spacing: 0.08em; padding: 8px 10px 4px;
+}
+.mob-sidebar-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 9px; text-decoration: none;
+  font-size: 13.5px; font-weight: 500; color: #374151; transition: 0.15s;
+  border: none; background: none; font-family: 'Inter', sans-serif;
+  cursor: pointer; width: 100%; text-align: left;
+}
+.mob-sidebar-item:hover  { background: #f1f5f9; color: #1e40af; }
+.mob-sidebar-item.active { background: #eff6ff; color: #1e40af; font-weight: 600; }
+.mob-s-icon {
+  width: 28px; height: 28px; border-radius: 7px; background: #f3f4f6;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: #6b7280; flex-shrink: 0;
+}
+.mob-sidebar-item.active .mob-s-icon,
+.mob-sidebar-item:hover  .mob-s-icon { background: #dbeafe; color: #1e40af; }
+.mob-divider { height: 1px; background: #e5e7eb; margin: 6px 0; }
+
+/* ── LAYOUT ── */
+.layout { display: flex; height: calc(100vh - 67px); }
+
+.sidebar {
+  width: 240px; background: white; border-right: 1px solid #e5e7eb;
+  display: flex; flex-direction: column;
+  position: sticky; top: 67px;
+  height: calc(100vh - 67px); overflow-y: auto; flex-shrink: 0;
+}
+.sidebar-section-label {
+  padding: 16px 20px 6px; font-size: 10.5px; font-weight: 700;
+  color: #9ca3af; text-transform: uppercase; letter-spacing: 0.08em;
+}
+.sidebar-item {
+  display: flex; align-items: center; gap: 11px;
+  padding: 11px 20px; font-size: 14px; font-weight: 500;
+  color: #374151; cursor: pointer; border: none; background: none;
+  width: 100%; text-align: left; font-family: 'Inter', sans-serif;
+  transition: 0.15s; text-decoration: none; border-left: 3px solid transparent;
+}
+.sidebar-item:hover { background: #f9fafb; color: #1e40af; }
+.sidebar-item.active { background: #eff6ff; color: #1e40af; font-weight: 600; border-left-color: #1e40af; }
+.s-icon {
+  width: 30px; height: 30px; border-radius: 8px; background: #f3f4f6;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: #6b7280; flex-shrink: 0;
+}
+.sidebar-item.active .s-icon,
+.sidebar-item:hover  .s-icon { background: #dbeafe; color: #1e40af; }
+
+.main-content { flex: 1; padding: 32px; overflow-y: auto; min-width: 0; }
+
+/* PAGE HEADER */
+.page-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+}
+.page-header h2 { font-weight: 700; font-size: 26px; margin: 0 0 3px; color: #0f172a; }
+.page-header p  { color: #6b7280; margin: 0; font-size: 14px; }
+
+.staff-notice {
+  background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px;
+  padding: 12px 16px; display: flex; align-items: center; gap: 10px;
+  font-size: 13.5px; color: #a16207; margin-bottom: 20px;
+}
+
+/* STATS */
+.stats-row {
+  display: grid; grid-template-columns: repeat(5,1fr);
+  gap: 14px; margin-bottom: 24px;
+}
+.stat-box {
+  background: white; border-radius: 13px; border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03); padding: 16px 18px;
+  display: flex; align-items: center; gap: 12px; transition: 0.2s;
+}
+.stat-box:hover { border-color: #bfdbfe; box-shadow: 0 4px 14px rgba(30,64,175,0.08); }
+.stat-icon {
+  width: 42px; height: 42px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; flex-shrink: 0;
+}
+.si-blue   { background: #dbeafe; color: #1e40af; }
+.si-green  { background: #dcfce7; color: #15803d; }
+.si-amber  { background: #fef9c3; color: #a16207; }
+.si-purple { background: #ede9fe; color: #7c3aed; }
+.si-red    { background: #fee2e2; color: #dc2626; }
+.stat-label { font-size: 11px; color: #9ca3af; margin: 0 0 3px; font-weight: 500; }
+.stat-value { font-size: 22px; font-weight: 700; color: #0f172a; margin: 0; line-height: 1; }
+
+/* FILTER BAR */
+.filter-bar {
+  background: white; border-radius: 13px; border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  padding: 14px 18px; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.filter-bar input,
+.filter-bar select {
+  padding: 9px 12px; border: 1.5px solid #e5e7eb; border-radius: 8px;
+  font-size: 13.5px; font-family: 'Inter', sans-serif;
+  color: #111827; background: #fafafa; outline: none; transition: 0.18s;
+}
+.filter-bar input  { flex: 1; min-width: 180px; }
+.filter-bar select { min-width: 140px; }
+.filter-bar input:focus,
+.filter-bar select:focus { border-color: #1e40af; background: white; box-shadow: 0 0 0 3px rgba(30,64,175,0.08); }
+.btn-export {
+  background: white; color: #374151; border: 1.5px solid #e5e7eb;
+  padding: 9px 16px; border-radius: 8px; font-size: 13.5px; font-weight: 600;
+  font-family: 'Inter', sans-serif; cursor: pointer; transition: 0.2s;
+  display: flex; align-items: center; gap: 6px; margin-left: auto; white-space: nowrap;
+}
+.btn-export:hover { background: #f3f4f6; }
+
+/* CARD */
+.card {
+  background: white; border-radius: 14px; border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04); overflow: hidden;
+}
+.card-head {
+  padding: 15px 22px 12px; border-bottom: 1px solid #f1f5f9;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.card-head-left { display: flex; align-items: center; gap: 9px; }
+.card-head-left h6 { font-weight: 600; font-size: 15px; color: #111827; margin: 0; }
+.hicon {
+  width: 32px; height: 32px; border-radius: 8px; background: #dbeafe;
+  display: flex; align-items: center; justify-content: center;
+  color: #1e40af; font-size: 13px; flex-shrink: 0;
+}
+
+/* TABLE */
+.tbl-wrap { overflow-x: auto; }
+.pat-table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 900px; }
+.pat-table th {
+  text-align: left; padding: 10px 16px;
+  font-size: 10.5px; font-weight: 700; color: #9ca3af;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  border-bottom: 1px solid #f1f5f9; background: #fafafa;
+}
+.pat-table td {
+  padding: 12px 16px; border-bottom: 1px solid #f9fafb;
+  color: #374151; vertical-align: middle;
+}
+.pat-table tr:last-child td { border-bottom: none; }
+.pat-table tr:hover td { background: #f9fafb; }
+
+.pat-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: #dbeafe; color: #1e40af;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 13px; flex-shrink: 0;
+}
+
+/* BADGES */
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 20px;
+}
+.b-active     { background: #dcfce7; color: #15803d; }
+.b-philhealth { background: #dbeafe; color: #1e40af; }
+.b-inactive   { background: #fee2e2; color: #dc2626; }
+.b-4ps        { background: #fef9c3; color: #a16207; }
+.b-senior     { background: #ede9fe; color: #7c3aed; }
+.b-pwd        { background: #fce7f3; color: #9d174d; }
+.b-none       { background: #f3f4f6; color: #9ca3af; }
+
+.btn-sm {
+  padding: 5px 11px; border-radius: 7px; font-size: 12px; font-weight: 600;
+  font-family: 'Inter', sans-serif; cursor: pointer; border: none; transition: 0.15s;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.bs-blue { background: #dbeafe; color: #1e40af; }
+.bs-blue:hover { background: #bfdbfe; }
+
+/* PAGINATION */
+.pagination-wrap {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 22px; border-top: 1px solid #f1f5f9;
+  font-size: 13px; color: #6b7280; flex-wrap: wrap; gap: 8px;
+}
+.pagination-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+.page-btn {
+  width: 32px; height: 32px; border-radius: 8px; border: 1.5px solid #e5e7eb;
+  background: white; color: #374151; font-size: 13px; font-weight: 600;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-family: 'Inter', sans-serif; transition: 0.15s;
+}
+.page-btn:hover { background: #f3f4f6; }
+.page-btn.active { background: #1e40af; color: white; border-color: #1e40af; }
+
+/* MODAL */
+.simple-modal .modal-content {
+  border-radius: 14px; border: 1px solid #e5e7eb;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12); font-family: 'Inter', sans-serif;
+}
+.simple-modal .modal-header { padding: 18px 24px 14px; border-bottom: 1px solid #f1f5f9; }
+.simple-modal .modal-title { font-size: 16px; font-weight: 700; color: #111827; display: flex; align-items: center; gap: 9px; }
+.mti { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.mti-blue { background: #dbeafe; color: #1e40af; }
+.simple-modal .modal-body   { padding: 20px 24px; }
+.simple-modal .modal-footer { padding: 14px 24px 20px; border-top: 1px solid #f1f5f9; gap: 10px; justify-content: flex-end; }
+.btn-dark-blue {
+  background: #1e40af; color: white; border: none;
+  padding: 10px 22px; border-radius: 8px; font-weight: 600; font-size: 14px;
+  font-family: 'Inter', sans-serif; cursor: pointer; transition: 0.2s;
+  display: inline-flex; align-items: center; gap: 7px;
+}
+.btn-dark-blue:hover { background: #1d4ed8; }
+.btn-outline-cancel {
+  background: white; color: #374151; border: 1.5px solid #e5e7eb;
+  padding: 10px 18px; border-radius: 8px; font-weight: 500; font-size: 14px;
+  font-family: 'Inter', sans-serif; cursor: pointer; transition: 0.2s;
+}
+.btn-outline-cancel:hover { background: #f3f4f6; }
+
+.pat-modal-header-card {
+  background: #1e40af; border-radius: 12px; padding: 20px 22px;
+  display: flex; align-items: center; gap: 16px; margin-bottom: 18px; flex-wrap: wrap;
+}
+.pat-modal-avatar {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4);
+  color: white; display: flex; align-items: center; justify-content: center;
+  font-size: 22px; font-weight: 700; flex-shrink: 0;
+}
+.pat-modal-name { font-size: 17px; font-weight: 700; color: white; margin: 0 0 3px; }
+.pat-modal-id   { font-size: 12px; color: rgba(255,255,255,0.7); margin: 0; }
+
+.detail-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;
+  margin-bottom: 14px;
+}
+.detail-cell {
+  padding: 12px 16px; border-bottom: 1px solid #f3f4f6; font-size: 13.5px;
+}
+.detail-cell:nth-last-child(-n+2) { border-bottom: none; }
+.detail-cell:nth-child(odd) { border-right: 1px solid #f3f4f6; }
+.detail-label { font-size: 11.5px; color: #9ca3af; margin-bottom: 3px; font-weight: 500; }
+.detail-value { font-weight: 600; color: #111827; }
+
+.section-title {
+  font-size: 11px; font-weight: 700; color: #9ca3af;
+  text-transform: uppercase; letter-spacing: 0.08em; margin: 14px 0 8px;
+}
+.tags-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+
+.empty-state { text-align: center; padding: 60px 24px; color: #9ca3af; }
+.empty-icon {
+  width: 64px; height: 64px; background: #f3f4f6; border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px; font-size: 26px; color: #d1d5db;
+}
+
+/* ══ RESPONSIVE ══ */
+
+@media (max-width: 900px) {
+  .sidebar       { display: none; }
+  .hamburger-btn { display: block; }
+  .main-content  { padding: 24px; }
+  html, body     { overflow: auto; }
+  .layout        { height: auto; }
+}
+
+@media (max-width: 768px) {
+  .nav-container { padding: 12px 20px; }
+  .admin-info    { display: none; }
+  .main-content  { padding: 16px; }
+  .stats-row     { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .filter-bar    { flex-direction: column; align-items: stretch; gap: 8px; }
+  .filter-bar input,
+  .filter-bar select { min-width: unset; width: 100%; }
+  .btn-export    { margin-left: 0; width: 100%; justify-content: center; }
+  .page-header h2 { font-size: 22px; }
+  .stat-icon     { width: 36px; height: 36px; font-size: 15px; }
+  .stat-value    { font-size: 20px; }
+}
+
+@media (max-width: 480px) {
+  .stats-row     { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat-box      { padding: 12px 10px; gap: 8px; }
+  .stat-value    { font-size: 18px; }
+  .section-body  { padding: 14px; }
+  .detail-grid   { grid-template-columns: 1fr; }
+  .detail-cell:nth-child(odd) { border-right: none; }
+  .detail-cell:nth-last-child(-n+2) { border-bottom: 1px solid #f3f4f6; }
+  .detail-cell:last-child    { border-bottom: none; }
+  .btn-logout span { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="logo-area">
+      <img src="images/logo.png">
+      <div>
+        <strong>Pulilan Health Center</strong>
+        <small>Admin Panel</small>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="admin-info">
+        <span class="a-name" id="adminName">Administrator</span>
+        <span class="a-role" id="adminRole">Super Admin</span>
+      </div>
+      <div class="admin-avatar" id="adminAvatar">A</div>
+      <button class="btn-logout" onclick="doLogout()">
+        <i class="fas fa-right-from-bracket"></i> <span>Logout</span>
+      </button>
+      <button class="hamburger-btn" onclick="toggleAdminMenu()" id="adminHamburger">
+        <i class="fas fa-bars" id="adminHamburgerIcon"></i>
+      </button>
+    </div>
+
+    <!-- Mobile sidebar -->
+    <div class="mobile-sidebar" id="mobileSidebar">
+      <div class="mob-section-label">Main</div>
+      <a class="mob-sidebar-item" href="admin-dashboard.html">
+        <div class="mob-s-icon"><i class="fas fa-house"></i></div> Dashboard
+      </a>
+      <a class="mob-sidebar-item" href="admin-appointments.html">
+        <div class="mob-s-icon"><i class="fas fa-calendar-check"></i></div> Appointments
+      </a>
+      <a class="mob-sidebar-item" href="admin-queue.html">
+        <div class="mob-s-icon"><i class="fas fa-list-ol"></i></div> Queue Management
+      </a>
+      <a class="mob-sidebar-item active" href="admin-patients.html">
+        <div class="mob-s-icon"><i class="fas fa-users"></i></div> Patients
+      </a>
+      <div class="mob-divider"></div>
+      <div class="mob-section-label">System</div>
+      <button class="mob-sidebar-item" onclick="doLogout()">
+        <div class="mob-s-icon"><i class="fas fa-right-from-bracket"></i></div> Logout
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="layout">
+
+  <!-- DESKTOP SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-section-label">Main</div>
+    <a class="sidebar-item" href="admin-dashboard.html">
+      <div class="s-icon"><i class="fas fa-house"></i></div> Dashboard
+    </a>
+    <a class="sidebar-item" href="admin-appointments.html">
+      <div class="s-icon"><i class="fas fa-calendar-check"></i></div> Appointments
+    </a>
+    <a class="sidebar-item" href="admin-queue.html">
+      <div class="s-icon"><i class="fas fa-list-ol"></i></div> Queue Management
+    </a>
+    <a class="sidebar-item active" href="admin-patients.html">
+      <div class="s-icon"><i class="fas fa-users"></i></div> Patients
+    </a>
+    <div class="sidebar-section-label">System</div>
+    <a class="sidebar-item" onclick="doLogout()" href="#">
+      <div class="s-icon"><i class="fas fa-right-from-bracket"></i></div> Logout
+    </a>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <div class="page-header">
+      <div>
+        <h2>Patients</h2>
+        <p id="pageDesc">View and manage registered patients in Pulilan Health Center</p>
+      </div>
+      <div style="font-size:13px;color:#6b7280;display:flex;align-items:center;gap:6px;">
+        <i class="fas fa-users"></i>
+        <span id="totalPatients">0</span> registered patients
+      </div>
+    </div>
+
+    <div class="staff-notice" id="staffNotice" style="display:none;">
+      <i class="fas fa-circle-info"></i>
+      <span id="staffNoticeText"></span>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-icon si-blue"><i class="fas fa-users"></i></div>
+        <div>
+          <p class="stat-label">Total Patients</p>
+          <p class="stat-value" id="sTotal">0</p>
+        </div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon si-amber"><i class="fas fa-star"></i></div>
+        <div>
+          <p class="stat-label">Senior Citizens</p>
+          <p class="stat-value" id="sSenior">0</p>
+        </div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon si-purple"><i class="fas fa-wheelchair"></i></div>
+        <div>
+          <p class="stat-label">PWD</p>
+          <p class="stat-value" id="sPwd">0</p>
+        </div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon si-green"><i class="fas fa-hand-holding-heart"></i></div>
+        <div>
+          <p class="stat-label">4Ps Members</p>
+          <p class="stat-value" id="s4ps">0</p>
+        </div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon si-red"><i class="fas fa-id-card"></i></div>
+        <div>
+          <p class="stat-label">w/ PhilHealth</p>
+          <p class="stat-value" id="sPhilhealth">0</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <input type="text" id="searchInput" placeholder="Search name, barangay, or patient ID..." oninput="applyFilters()">
+      <select id="filterSex" onchange="applyFilters()">
+        <option value="">All Sex</option>
+        <option>Female</option>
+        <option>Male</option>
+      </select>
+      <select id="filterBarangay" onchange="applyFilters()">
+        <option value="">All Barangays</option>
+        <option>Balatong A</option><option>Balatong B</option>
+        <option>Cutcot</option><option>Dampol 1st</option>
+        <option>Dampol 2nd A</option><option>Dampol 2nd B</option>
+        <option>Dulong Malabon</option><option>Inaon</option>
+        <option>Lumbac</option><option>Paltao</option>
+        <option>Penabatan</option><option>Poblacion</option>
+        <option>Pulilen (Patubig)</option><option>Santa Peregrina</option>
+        <option>Santo Cristo</option><option>Tiaong</option>
+        <option>Tibag</option><option>Tinejero</option>
+      </select>
+      <select id="filterClassification" onchange="applyFilters()">
+        <option value="">All Classifications</option>
+        <option value="senior">Senior Citizen</option>
+        <option value="pwd">PWD</option>
+        <option value="4ps">4Ps Member</option>
+        <option value="philhealth">With PhilHealth</option>
+      </select>
+      <button class="btn-export" onclick="exportCSV()">
+        <i class="fas fa-download"></i> Export CSV
+      </button>
+    </div>
+
+    <!-- TABLE CARD -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-left">
+          <div class="hicon"><i class="fas fa-users"></i></div>
+          <h6>Patient Records</h6>
+        </div>
+        <span style="font-size:12px;color:#9ca3af;" id="tableMeta"></span>
+      </div>
+      <div class="tbl-wrap">
+        <table class="pat-table">
+          <thead>
+            <tr>
+              <th>Patient</th>
+              <th>Sex / Age</th>
+              <th>Barangay</th>
+              <th>Contact</th>
+              <th>PhilHealth</th>
+              <th>Classifications</th>
+              <th>Preferred RHU</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="patTableBody"></tbody>
+        </table>
+      </div>
+      <div class="pagination-wrap">
+        <span id="pageInfo">Showing 0 of 0</span>
+        <div class="pagination-btns" id="pageBtns"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PATIENT DETAIL MODAL -->
+<div class="modal fade simple-modal" id="patModal" tabindex="-1">
+<div class="modal-dialog modal-dialog-centered modal-lg">
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title">
+      <div class="mti mti-blue"><i class="fas fa-user"></i></div>
+      Patient Record
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+  </div>
+  <div class="modal-body" id="patModalBody"></div>
+  <div class="modal-footer">
+    <button class="btn-outline-cancel" data-bs-dismiss="modal">Close</button>
+    <button class="btn-dark-blue" id="viewApptBtn">
+      <i class="fas fa-calendar-check"></i> View Appointments
+    </button>
+  </div>
+</div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+
+/* HAMBURGER */
+function toggleAdminMenu() {
+  const menu = document.getElementById("mobileSidebar");
+  const icon = document.getElementById("adminHamburgerIcon");
+  menu.classList.toggle("show");
+  icon.className = menu.classList.contains("show") ? "fas fa-times" : "fas fa-bars";
+}
+document.addEventListener("click", function(e) {
+  const menu = document.getElementById("mobileSidebar");
+  const btn  = document.getElementById("adminHamburger");
+  if (!menu.contains(e.target) && !btn.contains(e.target)) {
+    menu.classList.remove("show");
+    document.getElementById("adminHamburgerIcon").className = "fas fa-bars";
+  }
+});
+
+/* SESSION */
+const session = JSON.parse(localStorage.getItem("adminSession") || "{}");
+if (!session.loggedIn) window.location.href = "admin-login.html";
+document.getElementById("adminName").innerText   = session.name  || "Administrator";
+document.getElementById("adminRole").innerText   = session.role  || "Admin";
+document.getElementById("adminAvatar").innerText = (session.name || "A").charAt(0).toUpperCase();
+
+const isSuperAdmin = session.role === "Super Admin";
+const userBranch   = session.branch || "All Branches";
+
+function doLogout() {
+  localStorage.removeItem("adminSession");
+  window.location.href = "admin-login.html";
+}
+
+/* PATIENTS DATA */
+const patients = [
+  { id:"PHC-001", name:"Lola Nena Cruz",    sex:"Female", age:68, barangay:"Dampol 1st",  contact:"09171234567", philhealth:"Active",   philhealthNum:"12-345678901-2", senior:true,  pwd:false, fourPs:false, preferredRhu:"RHU I – Poblacion",  bloodType:"O+",  conditions:"Hypertension, Arthritis",  medications:"Amlodipine 5mg",          appointments:3,  lastVisit:"March 16, 2026" },
+  { id:"PHC-002", name:"Mang Andres Lim",   sex:"Male",   age:45, barangay:"Tinejero",    contact:"09181234567", philhealth:"Active",   philhealthNum:"12-345678902-3", senior:false, pwd:true,  pwdType:"Physical", fourPs:false, preferredRhu:"RHU I – Poblacion",  bloodType:"A+",  conditions:"None",                    medications:"None",                    appointments:1,  lastVisit:"March 16, 2026" },
+  { id:"PHC-003", name:"Maria Santos",      sex:"Female", age:28, barangay:"Cutcot",      contact:"09191234567", philhealth:"Active",   philhealthNum:"12-345678903-4", senior:false, pwd:false, fourPs:true,  preferredRhu:"RHU II – Cutcot",    bloodType:"B+",  conditions:"None",                    medications:"Prenatal vitamins",        appointments:5,  lastVisit:"March 16, 2026" },
+  { id:"PHC-004", name:"Juan Dela Cruz",    sex:"Male",   age:45, barangay:"Poblacion",   contact:"09201234567", philhealth:"Active",   philhealthNum:"12-345678904-5", senior:false, pwd:false, fourPs:false, preferredRhu:"RHU I – Poblacion",  bloodType:"O-",  conditions:"Diabetes Type 2",         medications:"Metformin 500mg",         appointments:8,  lastVisit:"March 15, 2026" },
+  { id:"PHC-005", name:"Tatay Benito Cruz", sex:"Male",   age:72, barangay:"Tiaong",      contact:"09211234567", philhealth:"Active",   philhealthNum:"12-345678905-6", senior:true,  pwd:false, fourPs:false, preferredRhu:"RHU II – Cutcot",    bloodType:"AB+", conditions:"Hypertension, Heart disease", medications:"Losartan 50mg, Aspirin", appointments:12, lastVisit:"March 16, 2026" },
+  { id:"PHC-006", name:"Ashley Amira",      sex:"Female", age:26, barangay:"Cutcot",      contact:"09221234567", philhealth:"Active",   philhealthNum:"12-345678906-7", senior:false, pwd:false, fourPs:false, preferredRhu:"RHU II – Cutcot",    bloodType:"A-",  conditions:"None",                    medications:"None",                    appointments:2,  lastVisit:"March 16, 2026" },
+  { id:"PHC-007", name:"Carlo Reyes",       sex:"Male",   age:33, barangay:"Tibag",       contact:"09231234567", philhealth:"Inactive", philhealthNum:"",              senior:false, pwd:false, fourPs:true,  preferredRhu:"RHU II – Cutcot",    bloodType:"B-",  conditions:"Asthma",                  medications:"Salbutamol inhaler",      appointments:3,  lastVisit:"March 16, 2026" },
+  { id:"PHC-008", name:"Liza Mendoza",      sex:"Female", age:29, barangay:"Lumbac",      contact:"09241234567", philhealth:"Active",   philhealthNum:"12-345678908-9", senior:false, pwd:false, fourPs:true,  preferredRhu:"RHU II – Cutcot",    bloodType:"O+",  conditions:"None",                    medications:"Prenatal vitamins",        appointments:4,  lastVisit:"March 16, 2026" },
+  { id:"PHC-009", name:"Elena Santos",      sex:"Female", age:38, barangay:"Penabatan",   contact:"09251234567", philhealth:"Active",   philhealthNum:"12-345678909-0", senior:false, pwd:false, fourPs:false, preferredRhu:"RHU III – Tinejero", bloodType:"A+",  conditions:"None",                    medications:"None",                    appointments:6,  lastVisit:"March 16, 2026" },
+  { id:"PHC-010", name:"Lolo Mario Reyes",  sex:"Male",   age:71, barangay:"Santo Cristo",contact:"09261234567", philhealth:"Active",   philhealthNum:"12-345678910-1", senior:true,  pwd:false, fourPs:false, preferredRhu:"RHU III – Tinejero", bloodType:"O+",  conditions:"Hypertension, Diabetes",  medications:"Amlodipine, Metformin",   appointments:9,  lastVisit:"March 16, 2026" },
+  { id:"PHC-011", name:"James Cruz",        sex:"Male",   age:31, barangay:"Inaon",       contact:"09271234567", philhealth:"Inactive", philhealthNum:"",              senior:false, pwd:false, fourPs:true,  preferredRhu:"RHU III – Tinejero", bloodType:"B+",  conditions:"None",                    medications:"None",                    appointments:1,  lastVisit:"March 16, 2026" },
+  { id:"PHC-012", name:"Rico Dela Cruz",    sex:"Male",   age:7,  barangay:"Tinejero",    contact:"09281234567", philhealth:"Active",   philhealthNum:"12-345678912-3", senior:false, pwd:false, fourPs:true,  preferredRhu:"RHU IV – Tibag",     bloodType:"O-",  conditions:"None",                    medications:"None",                    appointments:3,  lastVisit:"March 16, 2026" },
+  { id:"PHC-013", name:"Aling Paz Santos",  sex:"Female", age:55, barangay:"Paltao",      contact:"09291234567", philhealth:"Active",   philhealthNum:"12-345678913-4", senior:false, pwd:true,  pwdType:"Visual", fourPs:false, preferredRhu:"RHU IV – Tibag",     bloodType:"AB-", conditions:"Visual impairment, Hypertension", medications:"Losartan 25mg",   appointments:7,  lastVisit:"March 16, 2026" },
+  { id:"PHC-014", name:"Gina Reyes",        sex:"Female", age:42, barangay:"Balatong A",  contact:"09301234567", philhealth:"Active",   philhealthNum:"12-345678914-5", senior:false, pwd:false, fourPs:false, preferredRhu:"RHU IV – Tibag",     bloodType:"A+",  conditions:"None",                    medications:"None",                    appointments:2,  lastVisit:"March 16, 2026" },
+  { id:"PHC-015", name:"Ana Reyes",         sex:"Female", age:32, barangay:"Tibag",       contact:"09311234567", philhealth:"Inactive", philhealthNum:"",              senior:false, pwd:false, fourPs:true,  preferredRhu:"RHU IV – Tibag",     bloodType:"B+",  conditions:"None",                    medications:"None",                    appointments:4,  lastVisit:"March 14, 2026" },
+];
+
+/* Inject from patient-side profile */
+const profileData = JSON.parse(localStorage.getItem("profileData") || "{}");
+const apptData    = JSON.parse(localStorage.getItem("appointment")  || "null");
+if (profileData.firstName && profileData.lastName) {
+  const exists = patients.find(p => p.name === profileData.firstName + " " + profileData.lastName);
+  if (!exists) {
+    patients.unshift({
+      id:           "PHC-" + String(patients.length + 1).padStart(3,"0"),
+      name:         (profileData.firstName || "") + " " + (profileData.lastName || ""),
+      sex:          profileData.sex        || "—",
+      age:          profileData.dob ? Math.floor((new Date() - new Date(profileData.dob)) / 31557600000) : 0,
+      barangay:     profileData.barangay   || "—",
+      contact:      profileData.mobile     || "—",
+      philhealth:   profileData.philhealthStatus || "—",
+      philhealthNum:profileData.philhealthNum    || "",
+      senior:       profileData.isSenior === true || profileData.isSenior === "true",
+      pwd:          profileData.isPwd    === true || profileData.isPwd    === "true",
+      pwdType:      profileData.pwdType  || "",
+      fourPs:       profileData.toggle4ps === true || profileData.toggle4ps === "true",
+      preferredRhu: profileData.preferredRhu || "—",
+      bloodType:    profileData.bloodType    || "—",
+      conditions:   profileData.conditions   || "—",
+      medications:  profileData.medications  || "—",
+      appointments: apptData ? 1 : 0,
+      lastVisit:    apptData ? apptData.date : "—"
+    });
+  }
+}
+
+/* Branch filter for RHU Staff */
+if (!isSuperAdmin) {
+  for (let i = patients.length - 1; i >= 0; i--) {
+    if (patients[i].preferredRhu !== userBranch) patients.splice(i, 1);
+  }
+  document.getElementById("pageDesc").innerText =
+    "Patients registered under " + userBranch + " only";
+  document.getElementById("staffNotice").style.display = "flex";
+  document.getElementById("staffNoticeText").innerHTML =
+    `You are viewing patients for <strong>${userBranch}</strong> only.`;
+}
+
+/* STATS */
+function renderStats() {
+  document.getElementById("sTotal").innerText      = patients.length;
+  document.getElementById("sSenior").innerText     = patients.filter(p=>p.senior).length;
+  document.getElementById("sPwd").innerText        = patients.filter(p=>p.pwd).length;
+  document.getElementById("s4ps").innerText        = patients.filter(p=>p.fourPs).length;
+  document.getElementById("sPhilhealth").innerText = patients.filter(p=>p.philhealth==="Active").length;
+  document.getElementById("totalPatients").innerText = patients.length;
+}
+
+let filtered = [...patients];
+let currentPage = 1;
+const perPage   = 10;
+
+function applyFilters() {
+  const search = document.getElementById("searchInput").value.toLowerCase();
+  const sex    = document.getElementById("filterSex").value;
+  const bgy    = document.getElementById("filterBarangay").value;
+  const cls    = document.getElementById("filterClassification").value;
+
+  filtered = patients.filter(p => {
+    const ms = !search || p.name.toLowerCase().includes(search)
+                       || p.barangay.toLowerCase().includes(search)
+                       || p.id.toLowerCase().includes(search);
+    const mx = !sex || p.sex === sex;
+    const mb = !bgy || p.barangay === bgy;
+    const mc = !cls
+      || (cls==="senior"     && p.senior)
+      || (cls==="pwd"        && p.pwd)
+      || (cls==="4ps"        && p.fourPs)
+      || (cls==="philhealth" && p.philhealth==="Active");
+    return ms && mx && mb && mc;
+  });
+
+  currentPage = 1;
+  renderTable();
+}
+
+function renderTable() {
+  const start = (currentPage - 1) * perPage;
+  const paged = filtered.slice(start, start + perPage);
+  const total = filtered.length;
+  const pages = Math.ceil(total / perPage);
+
+  document.getElementById("tableMeta").innerText = total + " patient" + (total!==1?"s":"");
+  document.getElementById("pageInfo").innerText  =
+    `Showing ${Math.min(start+1,total)}–${Math.min(start+perPage,total)} of ${total}`;
+
+  const tbody = document.getElementById("patTableBody");
+
+  if (paged.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8">
+      <div class="empty-state">
+        <div class="empty-icon"><i class="fas fa-users"></i></div>
+        <p style="font-weight:600;color:#374151;margin:0 0 4px;">No patients found</p>
+        <p style="font-size:13px;margin:0;">Try adjusting your search or filters</p>
+      </div>
+    </td></tr>`;
+  } else {
+    tbody.innerHTML = paged.map(p => {
+      const initials  = p.name.split(" ").map(n=>n[0]).slice(0,2).join("").toUpperCase();
+      const philBadge = p.philhealth === "Active"
+        ? `<span class="badge b-philhealth"><i class="fas fa-circle-check"></i> Active</span>`
+        : p.philhealth === "Inactive"
+          ? `<span class="badge b-inactive">Inactive</span>`
+          : `<span class="badge b-none">—</span>`;
+      const tags = [];
+      if (p.senior) tags.push(`<span class="badge b-senior"><i class="fas fa-star"></i> Senior</span>`);
+      if (p.pwd)    tags.push(`<span class="badge b-pwd"><i class="fas fa-wheelchair"></i> PWD</span>`);
+      if (p.fourPs) tags.push(`<span class="badge b-4ps"><i class="fas fa-hand-holding-heart"></i> 4Ps</span>`);
+      if (tags.length === 0) tags.push(`<span style="color:#9ca3af;font-size:13px;">—</span>`);
+
+      return `<tr>
+        <td>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div class="pat-avatar">${initials}</div>
+            <div>
+              <strong>${p.name}</strong><br>
+              <small style="color:#9ca3af;font-size:11.5px;">${p.id}</small>
+            </div>
+          </div>
+        </td>
+        <td>${p.sex}<br><small style="color:#9ca3af;">${p.age} yrs old</small></td>
+        <td>${p.barangay}</td>
+        <td style="font-size:13px;">${p.contact}</td>
+        <td>${philBadge}</td>
+        <td>${tags.join(" ")}</td>
+        <td style="font-size:13px;color:#6b7280;">${p.preferredRhu}</td>
+        <td>
+          <button class="btn-sm bs-blue" onclick="viewPatient('${p.id}')">
+            <i class="fas fa-eye"></i> View
+          </button>
+        </td>
+      </tr>`;
+    }).join("");
+  }
+
+  const pb = document.getElementById("pageBtns");
+  pb.innerHTML = "";
+  for (let i = 1; i <= pages; i++) {
+    const btn = document.createElement("button");
+    btn.className   = "page-btn" + (i===currentPage?" active":"");
+    btn.textContent = i;
+    btn.onclick     = () => { currentPage=i; renderTable(); };
+    pb.appendChild(btn);
+  }
+}
+
+/* VIEW PATIENT */
+function viewPatient(id) {
+  const p = patients.find(x => x.id === id);
+  if (!p) return;
+  const initials   = p.name.split(" ").map(n=>n[0]).slice(0,2).join("").toUpperCase();
+  const isPriority = p.senior || p.pwd;
+  const tags = [];
+  if (p.senior) tags.push(`<span class="badge b-senior"><i class="fas fa-star"></i> Senior Citizen</span>`);
+  if (p.pwd)    tags.push(`<span class="badge b-pwd"><i class="fas fa-wheelchair"></i> PWD${p.pwdType?" – "+p.pwdType:""}</span>`);
+  if (p.fourPs) tags.push(`<span class="badge b-4ps"><i class="fas fa-hand-holding-heart"></i> 4Ps Member</span>`);
+  if (p.philhealth==="Active") tags.push(`<span class="badge b-philhealth"><i class="fas fa-id-card"></i> PhilHealth Active</span>`);
+
+  document.getElementById("patModalBody").innerHTML = `
+    <div class="pat-modal-header-card">
+      <div class="pat-modal-avatar">${initials}</div>
+      <div>
+        <p class="pat-modal-name">${p.name}</p>
+        <p class="pat-modal-id">${p.id} · ${p.preferredRhu}</p>
+      </div>
+      ${isPriority?`<span class="badge b-senior" style="margin-left:auto;font-size:12px;"><i class="fas fa-star"></i> Priority Patient</span>`:""}
+    </div>
+    <div class="section-title">Personal Information</div>
+    <div class="detail-grid">
+      <div class="detail-cell"><div class="detail-label">Sex</div><div class="detail-value">${p.sex}</div></div>
+      <div class="detail-cell"><div class="detail-label">Age</div><div class="detail-value">${p.age} years old</div></div>
+      <div class="detail-cell"><div class="detail-label">Barangay</div><div class="detail-value">${p.barangay}</div></div>
+      <div class="detail-cell"><div class="detail-label">Contact</div><div class="detail-value">${p.contact}</div></div>
+    </div>
+    <div class="section-title">Health Information</div>
+    <div class="detail-grid">
+      <div class="detail-cell"><div class="detail-label">Blood Type</div><div class="detail-value">${p.bloodType||"—"}</div></div>
+      <div class="detail-cell"><div class="detail-label">PhilHealth</div><div class="detail-value">${p.philhealth} ${p.philhealthNum?"("+p.philhealthNum+")":""}</div></div>
+      <div class="detail-cell"><div class="detail-label">Conditions</div><div class="detail-value">${p.conditions||"None"}</div></div>
+      <div class="detail-cell"><div class="detail-label">Medications</div><div class="detail-value">${p.medications||"None"}</div></div>
+    </div>
+    <div class="section-title">Classifications & Benefits</div>
+    <div class="tags-row">
+      ${tags.length > 0 ? tags.join("") : '<span style="color:#9ca3af;font-size:13.5px;">No special classifications</span>'}
+    </div>
+    <div class="section-title">Visit Summary</div>
+    <div class="detail-grid" style="margin-bottom:0;">
+      <div class="detail-cell"><div class="detail-label">Total Appointments</div><div class="detail-value">${p.appointments}</div></div>
+      <div class="detail-cell"><div class="detail-label">Last Visit</div><div class="detail-value">${p.lastVisit||"—"}</div></div>
+      <div class="detail-cell"><div class="detail-label">Preferred RHU</div><div class="detail-value">${p.preferredRhu}</div></div>
+    </div>`;
+
+  document.getElementById("viewApptBtn").onclick = function() {
+    localStorage.setItem("adminFilterPatient", p.name);
+    window.location.href = "admin-appointments.html";
+  };
+
+  new bootstrap.Modal(document.getElementById("patModal")).show();
+}
+
+/* EXPORT CSV */
+function exportCSV() {
+  const headers = ["Patient ID","Name","Sex","Age","Barangay","Contact","PhilHealth","Senior","PWD","4Ps","Preferred RHU","Blood Type","Conditions","Last Visit"];
+  const rows = filtered.map(p => [
+    p.id, p.name, p.sex, p.age, p.barangay, p.contact,
+    p.philhealth, p.senior?"Yes":"No", p.pwd?"Yes":"No",
+    p.fourPs?"Yes":"No", p.preferredRhu, p.bloodType||"—",
+    p.conditions||"None", p.lastVisit||"—"
+  ]);
+  const csv  = [headers,...rows].map(r=>r.map(v=>`"${v}"`).join(",")).join("\n");
+  const blob = new Blob([csv],{type:"text/csv"});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  a.href     = url;
+  a.download = "patients_" + new Date().toISOString().split("T")[0] + ".csv";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* INIT */
+renderStats();
+applyFilters();
+
+</script>
+</body>
+</html>

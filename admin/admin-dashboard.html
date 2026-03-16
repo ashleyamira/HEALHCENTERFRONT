@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard | Pulilan Health Center</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+* { box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: #f6f8fb; margin: 0; }
+
+html, body { height: 100%; overflow: hidden; }
+
+/* ── NAVBAR ── */
+.navbar {
+  position: sticky; top: 0; z-index: 1000;
+  background: white; border-bottom: 3px solid #1e40af;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.nav-container {
+  width: 100%; padding: 14px 32px;
+  display: flex; align-items: center; position: relative;
+}
+.logo-area { display: flex; align-items: center; gap: 12px; }
+.logo-area img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+.logo-area strong { font-size: 15px; color: #111827; }
+.logo-area small  { color: #6b7280; font-size: 12px; display: block; }
+.nav-right { display: flex; align-items: center; gap: 16px; margin-left: auto; }
+.admin-info { text-align: right; }
+.admin-info .a-name { font-size: 13.5px; font-weight: 600; color: #111827; display: block; }
+.admin-info .a-role { font-size: 12px; color: #6b7280; display: block; }
+.admin-avatar {
+  width: 36px; height: 36px; background: #1e40af; color: white;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 14px; cursor: pointer; flex-shrink: 0;
+}
+.btn-logout {
+  background: white; color: #dc2626; border: 1.5px solid #fecaca;
+  padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  font-family: 'Inter', sans-serif; cursor: pointer; transition: 0.2s;
+  display: flex; align-items: center; gap: 6px;
+}
+.btn-logout:hover { background: #fef2f2; }
+
+/* Mobile hamburger */
+.hamburger-btn {
+  display: none; background: none; border: none;
+  font-size: 22px; color: #374151; cursor: pointer; padding: 4px; margin-left: 10px;
+}
+.mobile-sidebar {
+  display: none; position: absolute; top: 100%; left: 0; right: 0;
+  background: white; border-top: 1px solid #e5e7eb;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  padding: 10px 12px 16px; z-index: 999; flex-direction: column; gap: 4px;
+}
+.mobile-sidebar.show { display: flex; }
+.mob-section-label {
+  font-size: 10.5px; font-weight: 700; color: #9ca3af;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  padding: 8px 10px 4px;
+}
+.mob-sidebar-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 9px;
+  text-decoration: none; font-size: 13.5px; font-weight: 500;
+  color: #374151; transition: 0.15s; border: none; background: none;
+  font-family: 'Inter', sans-serif; cursor: pointer; width: 100%; text-align: left;
+}
+.mob-sidebar-item:hover  { background: #f1f5f9; color: #1e40af; }
+.mob-sidebar-item.active { background: #eff6ff; color: #1e40af; font-weight: 600; }
+.mob-s-icon {
+  width: 28px; height: 28px; border-radius: 7px; background: #f3f4f6;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: #6b7280; flex-shrink: 0;
+}
+.mob-sidebar-item.active .mob-s-icon,
+.mob-sidebar-item:hover  .mob-s-icon { background: #dbeafe; color: #1e40af; }
+.mob-divider { height: 1px; background: #e5e7eb; margin: 6px 0; }
+
+/* ── LAYOUT ── */
+.layout { display: flex; height: calc(100vh - 67px); }
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px; background: white; border-right: 1px solid #e5e7eb;
+  display: flex; flex-direction: column;
+  position: sticky; top: 0;
+  height: 100vh; overflow-y: auto; flex-shrink: 0; z-index: 100;
+}
+.sidebar-section-label {
+  padding: 16px 20px 6px; font-size: 10.5px; font-weight: 700;
+  color: #9ca3af; text-transform: uppercase; letter-spacing: 0.08em;
+}
+.sidebar-item {
+  display: flex; align-items: center; gap: 11px;
+  padding: 11px 20px; font-size: 14px; font-weight: 500;
+  color: #374151; cursor: pointer; border: none; background: none;
+  width: 100%; text-align: left; font-family: 'Inter', sans-serif;
+  transition: 0.15s; text-decoration: none; border-left: 3px solid transparent;
+}
+.sidebar-item:hover { background: #f9fafb; color: #1e40af; }
+.sidebar-item.active { background: #eff6ff; color: #1e40af; font-weight: 600; border-left-color: #1e40af; }
+.s-icon {
+  width: 30px; height: 30px; border-radius: 8px; background: #f3f4f6;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: #6b7280; flex-shrink: 0;
+}
+.sidebar-item.active .s-icon,
+.sidebar-item:hover  .s-icon { background: #dbeafe; color: #1e40af; }
+
+/* MAIN */
+.main-content { flex: 1; padding: 32px; overflow-y: auto; min-width: 0; }
+
+.page-header { margin-bottom: 20px; }
+.page-header h2 { font-weight: 700; font-size: 26px; margin: 0 0 4px; color: #0f172a; }
+.page-header p  { color: #6b7280; margin: 0; font-size: 14px; }
+
+.header-meta {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 24px; flex-wrap: wrap; gap: 10px;
+}
+.branch-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #dbeafe; color: #1e40af;
+  font-size: 12.5px; font-weight: 600;
+  padding: 5px 14px; border-radius: 20px;
+}
+.branch-badge.staff-badge { background: #fef9c3; color: #a16207; }
+.date-badge {
+  font-size: 13px; color: #6b7280; font-weight: 500;
+  display: flex; align-items: center; gap: 6px;
+}
+
+/* STATS */
+.stats-grid {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  gap: 16px; margin-bottom: 24px;
+}
+.stat-card {
+  background: white; border-radius: 13px; border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03); padding: 20px;
+  display: flex; align-items: center; gap: 16px; transition: 0.2s;
+}
+.stat-card:hover { border-color: #bfdbfe; box-shadow: 0 4px 16px rgba(30,64,175,0.08); }
+.stat-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.si-blue   { background: #dbeafe; color: #1e40af; }
+.si-green  { background: #dcfce7; color: #15803d; }
+.si-amber  { background: #fef9c3; color: #a16207; }
+.si-purple { background: #ede9fe; color: #7c3aed; }
+.stat-label { font-size: 12px; color: #9ca3af; margin: 0 0 4px; font-weight: 500; }
+.stat-value { font-size: 28px; font-weight: 700; color: #0f172a; margin: 0; line-height: 1; }
+.stat-sub   { font-size: 11.5px; color: #9ca3af; margin-top: 4px; }
+
+/* SECTION CARD */
+.section-card {
+  background: white; border-radius: 13px; border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03); overflow: hidden; margin-bottom: 20px;
+}
+.section-head {
+  padding: 16px 22px 14px; border-bottom: 1px solid #f1f5f9;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+}
+.section-head-left { display: flex; align-items: center; gap: 10px; }
+.section-head-left h6 { font-weight: 600; font-size: 15px; color: #111827; margin: 0; }
+.hicon {
+  width: 32px; height: 32px; border-radius: 8px; background: #dbeafe;
+  display: flex; align-items: center; justify-content: center;
+  color: #1e40af; font-size: 13px; flex-shrink: 0;
+}
+.section-body { padding: 20px 22px; }
+
+/* TABLE */
+.data-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.data-table th {
+  text-align: left; padding: 10px 14px; font-size: 11px; font-weight: 700;
+  color: #9ca3af; text-transform: uppercase; letter-spacing: 0.06em;
+  border-bottom: 1px solid #f1f5f9; background: #fafafa;
+}
+.data-table td {
+  padding: 12px 14px; border-bottom: 1px solid #f9fafb;
+  color: #374151; vertical-align: middle;
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: #f9fafb; }
+
+/* Scrollable table wrapper for mobile */
+.table-wrap { overflow-x: auto; }
+
+/* BADGES */
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11.5px; font-weight: 600; padding: 3px 10px; border-radius: 20px;
+}
+.badge-confirmed { background: #dcfce7; color: #15803d; }
+.badge-pending   { background: #fef9c3; color: #a16207; }
+.badge-cancelled { background: #fee2e2; color: #dc2626; }
+.badge-serving   { background: #dbeafe; color: #1e40af; }
+.badge-waiting   { background: #f3f4f6; color: #6b7280; }
+
+.view-all {
+  font-size: 13px; color: #1e40af; font-weight: 600;
+  text-decoration: none; display: flex; align-items: center; gap: 5px;
+}
+.view-all:hover { text-decoration: underline; }
+
+/* QUEUE NOW */
+.queue-now { text-align: center; padding: 16px 0 20px; }
+.qn-label  {
+  font-size: 11px; font-weight: 700; color: #9ca3af;
+  text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;
+}
+.qn-number {
+  font-size: 60px; font-weight: 700; color: #1e40af;
+  line-height: 1; letter-spacing: -2px; margin-bottom: 8px;
+}
+.qn-service { font-size: 13px; color: #6b7280; }
+
+.progress-wrap { margin-top: 16px; }
+.progress-label {
+  display: flex; justify-content: space-between;
+  font-size: 12px; color: #9ca3af; margin-bottom: 6px;
+}
+.progress-track { background: #f1f5f9; border-radius: 99px; height: 8px; overflow: hidden; }
+.progress-fill {
+  background: linear-gradient(90deg,#1e40af,#3b82f6);
+  height: 100%; border-radius: 99px; transition: width 0.6s;
+}
+
+.live-dot {
+  width: 7px; height: 7px; background: #16a34a; border-radius: 50%;
+  display: inline-block; margin-left: 4px; animation: blink 1.5s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1;}50%{opacity:0.3;} }
+
+/* QUICK ACTIONS */
+.quick-actions {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  gap: 12px; margin-bottom: 24px;
+}
+.qa-card {
+  background: white; border: 1px solid #e5e7eb; border-radius: 12px;
+  padding: 16px 14px; text-align: center; cursor: pointer;
+  transition: 0.2s; text-decoration: none;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.qa-card:hover { border-color: #1e40af; background: #eff6ff; transform: translateY(-2px); }
+.qa-icon {
+  width: 40px; height: 40px; border-radius: 10px; background: #dbeafe;
+  display: flex; align-items: center; justify-content: center;
+  color: #1e40af; font-size: 17px;
+}
+.qa-label { font-size: 13px; font-weight: 600; color: #374151; }
+
+/* NOTICES */
+.notice-box {
+  background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px;
+  padding: 12px 16px; display: flex; align-items: center; gap: 10px;
+  font-size: 13.5px; color: #1e40af; margin-bottom: 24px;
+}
+.notice-box i { font-size: 16px; flex-shrink: 0; }
+.staff-notice {
+  background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px;
+  padding: 12px 16px; display: flex; align-items: center; gap: 10px;
+  font-size: 13.5px; color: #a16207; margin-bottom: 24px;
+}
+
+/* GRID 2 */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+/* SERVICE BARS */
+.service-bar-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid #f9fafb; font-size: 13.5px;
+}
+.service-bar-row:last-child { border-bottom: none; }
+.svc-name  { min-width: 140px; color: #374151; font-weight: 500; font-size: 13px; }
+.svc-count { min-width: 28px; font-weight: 700; color: #111827; text-align: right; }
+.svc-track { flex: 1; background: #f1f5f9; border-radius: 99px; height: 7px; overflow: hidden; }
+.svc-fill  { background: #1e40af; height: 100%; border-radius: 99px; }
+
+/* RHU GRID */
+.rhu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.rhu-item { border: 1px solid #e5e7eb; border-radius: 10px; padding: 14px 16px; }
+.rhu-item-name { font-weight: 600; font-size: 13.5px; color: #111827; margin-bottom: 6px; }
+.rhu-item-stats { display: flex; gap: 16px; font-size: 12.5px; color: #6b7280; }
+.rhu-item-stats span strong { color: #1e40af; }
+
+/* ══ RESPONSIVE ══ */
+
+@media (max-width: 1100px) {
+  .stats-grid    { grid-template-columns: repeat(2,1fr); }
+  .quick-actions { grid-template-columns: repeat(2,1fr); }
+}
+
+@media (max-width: 900px) {
+  .sidebar       { display: none; }
+  .hamburger-btn { display: block; }
+  .main-content  { padding: 24px; }
+  html, body     { overflow: auto; }
+  .layout        { height: auto; }
+}
+
+@media (max-width: 768px) {
+  .nav-container { padding: 12px 20px; }
+  .admin-info    { display: none; }
+  .main-content  { padding: 16px; }
+  .grid-2        { grid-template-columns: 1fr; }
+  .rhu-grid      { grid-template-columns: 1fr 1fr; }
+  .stats-grid    { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .quick-actions { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat-value    { font-size: 22px; }
+  .stat-icon     { width: 40px; height: 40px; font-size: 17px; }
+  .page-header h2 { font-size: 22px; }
+  .qn-number     { font-size: 48px; }
+}
+
+@media (max-width: 480px) {
+  .stats-grid    { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .quick-actions { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .rhu-grid      { grid-template-columns: 1fr; }
+  .stat-card     { padding: 14px 12px; gap: 10px; }
+  .stat-value    { font-size: 20px; }
+  .section-body  { padding: 14px; }
+  .btn-logout span { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="logo-area">
+      <img src="images/logo.png">
+      <div>
+        <strong>Pulilan Health Center</strong>
+        <small>Admin Panel</small>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="admin-info">
+        <span class="a-name" id="adminName">Administrator</span>
+        <span class="a-role" id="adminRole">Super Admin</span>
+      </div>
+      <div class="admin-avatar" id="adminAvatar">A</div>
+      <button class="btn-logout" onclick="doLogout()">
+        <i class="fas fa-right-from-bracket"></i> <span>Logout</span>
+      </button>
+      <button class="hamburger-btn" onclick="toggleAdminMenu()" id="adminHamburger">
+        <i class="fas fa-bars" id="adminHamburgerIcon"></i>
+      </button>
+    </div>
+
+    <!-- Mobile sidebar -->
+    <div class="mobile-sidebar" id="mobileSidebar">
+      <div class="mob-section-label">Main</div>
+      <a class="mob-sidebar-item active" href="admin-dashboard.html">
+        <div class="mob-s-icon"><i class="fas fa-house"></i></div> Dashboard
+      </a>
+      <a class="mob-sidebar-item" href="admin-appointments.html">
+        <div class="mob-s-icon"><i class="fas fa-calendar-check"></i></div> Appointments
+      </a>
+      <a class="mob-sidebar-item" href="admin-queue.html">
+        <div class="mob-s-icon"><i class="fas fa-list-ol"></i></div> Queue Management
+      </a>
+      <a class="mob-sidebar-item" href="admin-patients.html">
+        <div class="mob-s-icon"><i class="fas fa-users"></i></div> Patients
+      </a>
+      <div class="mob-divider"></div>
+      <div class="mob-section-label">System</div>
+      <button class="mob-sidebar-item" onclick="doLogout()">
+        <div class="mob-s-icon"><i class="fas fa-right-from-bracket"></i></div> Logout
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="layout">
+
+  <!-- DESKTOP SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-section-label">Main</div>
+    <a class="sidebar-item active" href="admin-dashboard.html">
+      <div class="s-icon"><i class="fas fa-house"></i></div> Dashboard
+    </a>
+    <a class="sidebar-item" href="admin-appointments.html">
+      <div class="s-icon"><i class="fas fa-calendar-check"></i></div> Appointments
+    </a>
+    <a class="sidebar-item" href="admin-queue.html">
+      <div class="s-icon"><i class="fas fa-list-ol"></i></div> Queue Management
+    </a>
+    <a class="sidebar-item" href="admin-patients.html">
+      <div class="s-icon"><i class="fas fa-users"></i></div> Patients
+    </a>
+    <div class="sidebar-section-label">System</div>
+    <a class="sidebar-item" onclick="doLogout()" href="#">
+      <div class="s-icon"><i class="fas fa-right-from-bracket"></i></div> Logout
+    </a>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <div class="page-header">
+      <h2>Dashboard</h2>
+      <p>Welcome back, <span id="welcomeName">Administrator</span></p>
+    </div>
+
+    <div class="header-meta">
+      <div class="branch-badge" id="branchBadge">
+        <i class="fas fa-hospital"></i>
+        <span id="branchName">All Branches</span>
+      </div>
+      <div class="date-badge">
+        <i class="fas fa-calendar"></i>
+        <span id="todayDate"></span>
+      </div>
+    </div>
+
+    <div class="staff-notice" id="staffNotice" style="display:none;">
+      <i class="fas fa-circle-info"></i>
+      <span id="staffNoticeText"></span>
+    </div>
+
+    <div class="notice-box" id="noticeBox" style="display:none;">
+      <i class="fas fa-bell"></i>
+      <span id="noticeText"></span>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon si-blue"><i class="fas fa-calendar-check"></i></div>
+        <div>
+          <p class="stat-label">Today's Appointments</p>
+          <p class="stat-value" id="statAppts">0</p>
+          <p class="stat-sub" id="statApptsSub">—</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon si-green"><i class="fas fa-list-ol"></i></div>
+        <div>
+          <p class="stat-label">In Queue Now</p>
+          <p class="stat-value" id="statQueue">0</p>
+          <p class="stat-sub">Waiting to be served</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon si-amber"><i class="fas fa-circle-check"></i></div>
+        <div>
+          <p class="stat-label">Served Today</p>
+          <p class="stat-value" id="statServed">0</p>
+          <p class="stat-sub">Out of <span id="statTotal">0</span> total</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon si-purple"><i class="fas fa-users"></i></div>
+        <div>
+          <p class="stat-label">Total Patients</p>
+          <p class="stat-value" id="statPatients">0</p>
+          <p class="stat-sub" id="statPatientsSub">—</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="quick-actions">
+      <a class="qa-card" href="admin-appointments.html">
+        <div class="qa-icon"><i class="fas fa-calendar-plus"></i></div>
+        <span class="qa-label">View Appointments</span>
+      </a>
+      <a class="qa-card" href="admin-queue.html">
+        <div class="qa-icon"><i class="fas fa-forward-step"></i></div>
+        <span class="qa-label">Manage Queue</span>
+      </a>
+      <a class="qa-card" href="admin-patients.html">
+        <div class="qa-icon"><i class="fas fa-user-plus"></i></div>
+        <span class="qa-label">Patient Records</span>
+      </a>
+      <a class="qa-card" href="admin-queue.html">
+        <div class="qa-icon"><i class="fas fa-display"></i></div>
+        <span class="qa-label">Queue Display</span>
+      </a>
+    </div>
+
+    <!-- ROW 1 -->
+    <div class="grid-2">
+
+      <div class="section-card">
+        <div class="section-head">
+          <div class="section-head-left">
+            <div class="hicon"><i class="fas fa-volume-high"></i></div>
+            <h6>Now Serving <span class="live-dot"></span></h6>
+          </div>
+          <a class="view-all" href="admin-queue.html">Manage <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="section-body">
+          <div class="queue-now">
+            <div class="qn-label">Currently Being Served</div>
+            <div class="qn-number" id="nowServingNum">—</div>
+            <div class="qn-service" id="nowServingSvc">—</div>
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-label">
+              <span>Queue Progress</span>
+              <span id="qProgressLabel">0 / 0 served</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" id="qProgressBar" style="width:0%"></div>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table" style="margin-top:16px;">
+              <thead>
+                <tr><th>Queue #</th><th>Service</th><th>Status</th></tr>
+              </thead>
+              <tbody id="queueTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head">
+          <div class="section-head-left">
+            <div class="hicon"><i class="fas fa-calendar-check"></i></div>
+            <h6>Today's Appointments</h6>
+          </div>
+          <a class="view-all" href="admin-appointments.html">View All <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="section-body" style="padding:0;">
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Patient</th><th>Service</th>
+                  <th>RHU</th><th>Time</th><th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="appointmentsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ROW 2 -->
+    <div class="grid-2">
+
+      <div class="section-card">
+        <div class="section-head">
+          <div class="section-head-left">
+            <div class="hicon"><i class="fas fa-stethoscope"></i></div>
+            <h6 id="svcTitle">Appointments by Service — Today</h6>
+          </div>
+        </div>
+        <div class="section-body" id="svcBarsBody"></div>
+      </div>
+
+      <div class="section-card" id="rhuStatusCard">
+        <div class="section-head">
+          <div class="section-head-left">
+            <div class="hicon"><i class="fas fa-hospital"></i></div>
+            <h6>RHU Branch Status — Today</h6>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="rhu-grid" id="rhuGrid"></div>
+        </div>
+      </div>
+
+      <div class="section-card" id="singleBranchCard" style="display:none;">
+        <div class="section-head">
+          <div class="section-head-left">
+            <div class="hicon" style="background:#fef9c3;color:#a16207;"><i class="fas fa-chart-bar"></i></div>
+            <h6 id="singleBranchTitle">Branch Overview</h6>
+          </div>
+        </div>
+        <div class="section-body" id="singleBranchBody"></div>
+      </div>
+
+    </div>
+
+    <!-- PATIENTS TABLE -->
+    <div class="section-card">
+      <div class="section-head">
+        <div class="section-head-left">
+          <div class="hicon"><i class="fas fa-users"></i></div>
+          <h6>Recently Registered Patients</h6>
+        </div>
+        <a class="view-all" href="admin-patients.html">View All <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="section-body" style="padding:0;">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Patient</th><th>Sex</th><th>Barangay</th>
+                <th>PhilHealth</th><th>4Ps</th><th>Senior / PWD</th>
+                <th>Preferred RHU</th><th>Registered</th>
+              </tr>
+            </thead>
+            <tbody id="patientsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+
+/* ── HAMBURGER ── */
+function toggleAdminMenu() {
+  const menu = document.getElementById("mobileSidebar");
+  const icon = document.getElementById("adminHamburgerIcon");
+  menu.classList.toggle("show");
+  icon.className = menu.classList.contains("show") ? "fas fa-times" : "fas fa-bars";
+}
+document.addEventListener("click", function(e) {
+  const menu = document.getElementById("mobileSidebar");
+  const btn  = document.getElementById("adminHamburger");
+  if (!menu.contains(e.target) && !btn.contains(e.target)) {
+    menu.classList.remove("show");
+    document.getElementById("adminHamburgerIcon").className = "fas fa-bars";
+  }
+});
+
+/* ── SESSION ── */
+const session = JSON.parse(localStorage.getItem("adminSession") || "{}");
+if (!session.loggedIn) window.location.href = "admin-login.html";
+
+const isSuperAdmin = session.role === "Super Admin";
+const userBranch   = session.branch || "All Branches";
+
+document.getElementById("adminName").innerText   = session.name || "Administrator";
+document.getElementById("adminRole").innerText   = session.role || "Admin";
+document.getElementById("adminAvatar").innerText = (session.name || "A").charAt(0).toUpperCase();
+document.getElementById("welcomeName").innerText = session.name || "Administrator";
+document.getElementById("branchName").innerText  = isSuperAdmin ? "All Branches" : userBranch;
+
+if (!isSuperAdmin) {
+  document.getElementById("branchBadge").classList.add("staff-badge");
+  document.getElementById("branchBadge").querySelector("i").className = "fas fa-building";
+}
+
+const now = new Date();
+document.getElementById("todayDate").innerText = now.toLocaleDateString("en-PH", {
+  weekday:"long", year:"numeric", month:"long", day:"numeric"
+});
+
+if (!isSuperAdmin) {
+  const sn = document.getElementById("staffNotice");
+  sn.style.display = "flex";
+  document.getElementById("staffNoticeText").innerHTML =
+    `You are viewing data for <strong>${userBranch}</strong> only. Contact Super Admin for other branches.`;
+}
+
+/* ── DATA ── */
+const allAppointments = [
+  { patient:"Lola Nena Cruz",    service:"General Consultation", rhu:"RHU I – Poblacion",  rhuShort:"RHU I",  time:"08:00 AM", status:"Confirmed", priority:true  },
+  { patient:"Mang Andres Lim",   service:"Vaccination",          rhu:"RHU I – Poblacion",  rhuShort:"RHU I",  time:"08:30 AM", status:"Confirmed", priority:true  },
+  { patient:"Maria Santos",      service:"Prenatal Care",        rhu:"RHU I – Poblacion",  rhuShort:"RHU I",  time:"09:00 AM", status:"Confirmed", priority:false },
+  { patient:"Juan Dela Cruz",    service:"General Consultation", rhu:"RHU I – Poblacion",  rhuShort:"RHU I",  time:"09:30 AM", status:"Pending",   priority:false },
+  { patient:"Tatay Benito Cruz", service:"General Consultation", rhu:"RHU II – Cutcot",    rhuShort:"RHU II", time:"08:00 AM", status:"Confirmed", priority:true  },
+  { patient:"Ashley Amira",      service:"General Consultation", rhu:"RHU II – Cutcot",    rhuShort:"RHU II", time:"09:00 AM", status:"Confirmed", priority:false },
+  { patient:"Carlo Reyes",       service:"Vaccination",          rhu:"RHU II – Cutcot",    rhuShort:"RHU II", time:"09:30 AM", status:"Pending",   priority:false },
+  { patient:"Liza Mendoza",      service:"Prenatal Care",        rhu:"RHU II – Cutcot",    rhuShort:"RHU II", time:"10:00 AM", status:"Cancelled", priority:false },
+  { patient:"Elena Santos",      service:"Vaccination",          rhu:"RHU III – Tinejero", rhuShort:"RHU III",time:"08:00 AM", status:"Confirmed", priority:false },
+  { patient:"Lolo Mario Reyes",  service:"General Consultation", rhu:"RHU III – Tinejero", rhuShort:"RHU III",time:"08:30 AM", status:"Confirmed", priority:true  },
+  { patient:"James Cruz",        service:"Family Planning",      rhu:"RHU III – Tinejero", rhuShort:"RHU III",time:"09:00 AM", status:"Pending",   priority:false },
+  { patient:"Rico Dela Cruz",    service:"Child Immunization",   rhu:"RHU IV – Tibag",     rhuShort:"RHU IV", time:"08:00 AM", status:"Done",      priority:false },
+  { patient:"Aling Paz Santos",  service:"General Consultation", rhu:"RHU IV – Tibag",     rhuShort:"RHU IV", time:"08:30 AM", status:"Confirmed", priority:true  },
+  { patient:"Gina Reyes",        service:"General Consultation", rhu:"RHU IV – Tibag",     rhuShort:"RHU IV", time:"09:00 AM", status:"Pending",   priority:false },
+  { patient:"Ana Reyes",         service:"Vaccination",          rhu:"RHU I – Poblacion",  rhuShort:"RHU I",  time:"10:00 AM", status:"Cancelled", priority:false },
+];
+
+const branchData = {
+  "RHU I – Poblacion":  { serving:"P-001", svc:"General Consultation", served:10, total:16, queue:[
+    { num:"P-001", svc:"General Consultation", status:"serving"  },
+    { num:"P-002", svc:"Vaccination",          status:"waiting"  },
+    { num:"A-011", svc:"Prenatal Care",        status:"waiting"  },
+    { num:"A-012", svc:"General Consultation", status:"waiting"  },
+  ]},
+  "RHU II – Cutcot":    { serving:"P-001", svc:"General Consultation", served:20, total:24, queue:[
+    { num:"P-001", svc:"General Consultation", status:"serving" },
+    { num:"A-021", svc:"General Consultation", status:"waiting" },
+    { num:"A-022", svc:"Vaccination",          status:"waiting" },
+    { num:"A-023", svc:"Prenatal Care",        status:"waiting" },
+  ]},
+  "RHU III – Tinejero": { serving:"A-034", svc:"Vaccination",          served:33, total:36, queue:[
+    { num:"A-034", svc:"Vaccination",          status:"serving" },
+    { num:"P-003", svc:"General Consultation", status:"waiting" },
+    { num:"A-035", svc:"Family Planning",      status:"waiting" },
+  ]},
+  "RHU IV – Tibag":     { serving:"A-007", svc:"Child Immunization",   served:6,  total:9,  queue:[
+    { num:"A-007", svc:"Child Immunization",   status:"serving" },
+    { num:"P-001", svc:"General Consultation", status:"waiting" },
+    { num:"A-008", svc:"General Consultation", status:"waiting" },
+  ]},
+};
+
+const allPatients = [
+  { name:"Lola Nena Cruz",    age:68, sex:"Female", barangay:"Dampol 1st",  philhealth:"Active", fourPs:false, senior:true,  pwd:false, rhu:"RHU I – Poblacion",  registered:"Today"     },
+  { name:"Mang Andres Lim",   age:45, sex:"Male",   barangay:"Tinejero",    philhealth:"Active", fourPs:false, senior:false, pwd:true,  rhu:"RHU I – Poblacion",  registered:"Today"     },
+  { name:"Maria Santos",      age:28, sex:"Female", barangay:"Cutcot",      philhealth:"Active", fourPs:true,  senior:false, pwd:false, rhu:"RHU II – Cutcot",    registered:"Today"     },
+  { name:"Juan Dela Cruz",    age:45, sex:"Male",   barangay:"Poblacion",   philhealth:"Active", fourPs:false, senior:false, pwd:false, rhu:"RHU I – Poblacion",  registered:"Today"     },
+  { name:"Tatay Benito Cruz", age:72, sex:"Male",   barangay:"Tiaong",      philhealth:"Active", fourPs:false, senior:true,  pwd:false, rhu:"RHU II – Cutcot",    registered:"Yesterday" },
+  { name:"Ashley Amira",      age:26, sex:"Female", barangay:"Cutcot",      philhealth:"Active", fourPs:false, senior:false, pwd:false, rhu:"RHU II – Cutcot",    registered:"Yesterday" },
+  { name:"Elena Santos",      age:38, sex:"Female", barangay:"Penabatan",   philhealth:"Active", fourPs:false, senior:false, pwd:false, rhu:"RHU III – Tinejero", registered:"Yesterday" },
+  { name:"Lolo Mario Reyes",  age:71, sex:"Male",   barangay:"Santo Cristo",philhealth:"Active", fourPs:false, senior:true,  pwd:false, rhu:"RHU III – Tinejero", registered:"Mar 14"    },
+  { name:"Aling Paz Santos",  age:55, sex:"Female", barangay:"Paltao",      philhealth:"Active", fourPs:false, senior:false, pwd:true,  rhu:"RHU IV – Tibag",     registered:"Mar 14"    },
+  { name:"Gina Reyes",        age:42, sex:"Female", barangay:"Balatong A",  philhealth:"Active", fourPs:false, senior:false, pwd:false, rhu:"RHU IV – Tibag",     registered:"Mar 14"    },
+];
+
+const filteredAppts    = isSuperAdmin ? allAppointments : allAppointments.filter(a => a.rhu === userBranch);
+const filteredPatients = isSuperAdmin ? allPatients     : allPatients.filter(p => p.rhu === userBranch);
+
+/* PATIENT-SIDE APPOINTMENT */
+const patientAppt = JSON.parse(localStorage.getItem("appointment") || "null");
+if (patientAppt) {
+  const showNotice = isSuperAdmin || patientAppt.center === userBranch;
+  if (showNotice) {
+    document.getElementById("noticeBox").style.display = "flex";
+    document.getElementById("noticeText").innerHTML =
+      `New appointment from patient side: <strong>${patientAppt.center}</strong> — <strong>${patientAppt.service}</strong> on <strong>${patientAppt.date}</strong> at <strong>${patientAppt.time}</strong>. Queue: <strong>${patientAppt.queue}</strong>`;
+  }
+}
+
+/* STATS */
+document.getElementById("statAppts").innerText     = filteredAppts.length;
+document.getElementById("statApptsSub").innerText  = isSuperAdmin ? "Across all RHU branches" : userBranch + " only";
+document.getElementById("statPatients").innerText  = filteredPatients.length;
+document.getElementById("statPatientsSub").innerText = isSuperAdmin ? "Registered in Pulilan" : "Registered in " + userBranch;
+
+if (isSuperAdmin) {
+  const totalServed = Object.values(branchData).reduce((s,b) => s + b.served, 0);
+  const totalQ      = Object.values(branchData).reduce((s,b) => s + (b.total - b.served), 0);
+  document.getElementById("statQueue").innerText  = totalQ;
+  document.getElementById("statServed").innerText = totalServed;
+  document.getElementById("statTotal").innerText  = Object.values(branchData).reduce((s,b) => s + b.total, 0);
+} else {
+  const bd = branchData[userBranch] || { served:0, total:0, queue:[] };
+  document.getElementById("statQueue").innerText  = bd.queue.filter(q => q.status === "waiting").length;
+  document.getElementById("statServed").innerText = bd.served;
+  document.getElementById("statTotal").innerText  = bd.total;
+}
+
+/* NOW SERVING */
+const nowBranch = isSuperAdmin ? branchData["RHU II – Cutcot"] : (branchData[userBranch] || {});
+if (nowBranch.serving) {
+  document.getElementById("nowServingNum").innerText = nowBranch.serving;
+  document.getElementById("nowServingSvc").innerText = nowBranch.svc + " · " + (isSuperAdmin ? "RHU II – Cutcot" : userBranch);
+  const pct = nowBranch.total > 0 ? Math.round((nowBranch.served / nowBranch.total) * 100) : 0;
+  document.getElementById("qProgressBar").style.width  = pct + "%";
+  document.getElementById("qProgressLabel").innerText  = nowBranch.served + " / " + nowBranch.total + " served";
+  document.getElementById("queueTableBody").innerHTML  = (nowBranch.queue || []).map(q => `
+    <tr>
+      <td><strong style="color:${q.num.startsWith("P")?"#a16207":"#1e40af"};">${q.num}</strong></td>
+      <td>${q.svc}</td>
+      <td>${q.status==="serving"
+        ? `<span class="badge badge-serving">Now Serving</span>`
+        : `<span class="badge badge-waiting">Waiting</span>`}</td>
+    </tr>`).join("");
+}
+
+/* TODAY'S APPOINTMENTS */
+let displayAppts = [...filteredAppts];
+if (patientAppt && (isSuperAdmin || patientAppt.center === userBranch)) {
+  displayAppts.unshift({
+    patient:"Patient (You)", service: patientAppt.service,
+    rhuShort: patientAppt.center.replace("RHU","").split("–")[0].trim(),
+    time: patientAppt.time, status:"Confirmed", highlight: true
+  });
+}
+document.getElementById("appointmentsTableBody").innerHTML = displayAppts.slice(0,6).map(a => `
+  <tr ${a.highlight ? 'style="background:#fffbeb;"' : ""}>
+    <td><strong ${a.highlight ? 'style="color:#1e40af;"' : ""}>${a.patient}</strong></td>
+    <td>${a.service}</td>
+    <td>${a.rhuShort || ""}</td>
+    <td>${a.time}</td>
+    <td><span class="badge ${
+      a.status==="Confirmed" ? "badge-confirmed" :
+      a.status==="Pending"   ? "badge-pending"   :
+      a.status==="Cancelled" ? "badge-cancelled"  : "badge-serving"
+    }">${a.status}</span></td>
+  </tr>`).join("");
+
+/* SERVICE BARS */
+const services = ["General Consultation","Vaccination","Prenatal Care","Child Immunization","Family Planning"];
+const svcCounts = services.map(s => filteredAppts.filter(a => a.service === s).length);
+const maxCount  = Math.max(...svcCounts, 1);
+document.getElementById("svcBarsBody").innerHTML = services.map((s,i) => `
+  <div class="service-bar-row">
+    <span class="svc-name">${s}</span>
+    <span class="svc-count">${svcCounts[i]}</span>
+    <div class="svc-track"><div class="svc-fill" style="width:${Math.round((svcCounts[i]/maxCount)*100)}%"></div></div>
+  </div>`).join("");
+
+/* RHU GRID / SINGLE BRANCH */
+if (isSuperAdmin) {
+  document.getElementById("rhuStatusCard").style.display    = "block";
+  document.getElementById("singleBranchCard").style.display = "none";
+  document.getElementById("rhuGrid").innerHTML = Object.entries(branchData).map(([name, bd]) => {
+    const waiting = bd.queue.filter(q => q.status === "waiting").length;
+    return `<div class="rhu-item">
+      <div class="rhu-item-name"><i class="fas fa-hospital" style="color:#1e40af;margin-right:6px;font-size:12px;"></i>${name}</div>
+      <div class="rhu-item-stats">
+        <span>Queue: <strong>${waiting}</strong></span>
+        <span>Served: <strong>${bd.served}</strong></span>
+      </div>
+    </div>`;
+  }).join("");
+} else {
+  document.getElementById("rhuStatusCard").style.display    = "none";
+  document.getElementById("singleBranchCard").style.display = "block";
+  const bd = branchData[userBranch] || { served:0, total:0, queue:[] };
+  const waiting = bd.queue.filter(q => q.status === "waiting").length;
+  document.getElementById("singleBranchTitle").innerText = userBranch + " — Overview";
+  document.getElementById("singleBranchBody").innerHTML = `
+    <div class="service-bar-row">
+      <span class="svc-name">In Queue</span>
+      <span class="svc-count" style="color:#1e40af;">${waiting}</span>
+      <div class="svc-track"><div class="svc-fill" style="width:${Math.round((waiting/Math.max(bd.total,1))*100)}%"></div></div>
+    </div>
+    <div class="service-bar-row">
+      <span class="svc-name">Served Today</span>
+      <span class="svc-count" style="color:#15803d;">${bd.served}</span>
+      <div class="svc-track"><div class="svc-fill" style="background:#15803d;width:${Math.round((bd.served/Math.max(bd.total,1))*100)}%"></div></div>
+    </div>
+    <div class="service-bar-row">
+      <span class="svc-name">Total Appointments</span>
+      <span class="svc-count">${filteredAppts.length}</span>
+      <div class="svc-track"><div class="svc-fill" style="width:100%"></div></div>
+    </div>
+    <div class="service-bar-row">
+      <span class="svc-name">Confirmed</span>
+      <span class="svc-count">${filteredAppts.filter(a=>a.status==="Confirmed").length}</span>
+      <div class="svc-track"><div class="svc-fill" style="background:#15803d;width:${Math.round((filteredAppts.filter(a=>a.status==="Confirmed").length/Math.max(filteredAppts.length,1))*100)}%"></div></div>
+    </div>
+    <div class="service-bar-row">
+      <span class="svc-name">Pending</span>
+      <span class="svc-count">${filteredAppts.filter(a=>a.status==="Pending").length}</span>
+      <div class="svc-track"><div class="svc-fill" style="background:#a16207;width:${Math.round((filteredAppts.filter(a=>a.status==="Pending").length/Math.max(filteredAppts.length,1))*100)}%"></div></div>
+    </div>`;
+}
+
+/* PATIENTS TABLE */
+document.getElementById("patientsTableBody").innerHTML = filteredPatients.slice(0,5).map(p => `
+  <tr>
+    <td><strong>${p.name}</strong><br><small style="color:#9ca3af;">${p.age} years old</small></td>
+    <td>${p.sex}</td>
+    <td>${p.barangay}</td>
+    <td>${p.philhealth === "Active"
+      ? `<span class="badge badge-confirmed">Active</span>`
+      : `<span class="badge badge-cancelled">Inactive</span>`}</td>
+    <td>${p.fourPs ? `<span class="badge badge-confirmed">Yes</span>` : "—"}</td>
+    <td>${p.senior
+      ? `<span class="badge badge-serving">Senior</span>`
+      : p.pwd
+        ? `<span class="badge" style="background:#fce7f3;color:#9d174d;">PWD</span>`
+        : "—"}</td>
+    <td style="font-size:13px;color:#6b7280;">${p.rhu}</td>
+    <td>${p.registered}</td>
+  </tr>`).join("");
+
+/* LOGOUT */
+function doLogout() {
+  localStorage.removeItem("adminSession");
+  window.location.href = "admin-login.html";
+}
+
+</script>
+</body>
+</html>
